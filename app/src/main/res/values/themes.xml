@@ -7,8 +7,7 @@
 
     </style>
 
-
-    <style name = "MAIN_BACKGROUND">
+    <style name = "MainBackground">
         <item name="android:background">@color/light_blue</item>
     </style>
 

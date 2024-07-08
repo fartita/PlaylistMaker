@@ -14,7 +14,7 @@
             android:id="@+id/toolbar_settings"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/margin_12"
+            android:layout_marginLeft="@dimen/margin_16"
             android:layout_weight="8"
             android:orientation="horizontal">
 
@@ -34,7 +34,7 @@
                 android:layout_weight="0.2"
                 android:fontFamily="@font/suez_one"
                 android:gravity="center|left"
-                android:paddingLeft="@dimen/margin_12"
+                android:paddingLeft="@dimen/margin_16"
                 android:text="@string/settings"
                 android:textColor="?attr/colorOnPrimary"
                 android:textSize="@dimen/textSize_22" />
@@ -44,7 +44,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/margin_20"
+            android:layout_marginTop="@dimen/margin_16"
             android:layout_weight="0.8"
             android:orientation="vertical">
 
@@ -53,7 +53,7 @@
                 android:id="@+id/text_dark_theme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_20"
+                android:layout_marginStart="@dimen/margin_16"
                 android:text="@string/dark_theme"
                 android:textColor="?attr/colorOnPrimary"
                 app:layout_constraintBottom_toTopOf="@+id/text_share_app"
@@ -63,7 +63,7 @@
                 android:id="@+id/switch_to_dark_theme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_20"
+                android:layout_marginEnd="@dimen/margin_12"
                 app:layout_constraintBottom_toBottomOf="@id/text_dark_theme"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/text_dark_theme" />
@@ -72,7 +72,7 @@
                 android:id="@+id/text_share_app"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_20"
+                android:layout_marginStart="@dimen/margin_16"
                 android:layout_marginTop="@dimen/margin_20"
                 android:text="@string/share_app"
                 android:textColor="?attr/colorOnPrimary"
@@ -94,7 +94,7 @@
                 android:id="@+id/text_support"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_20"
+                android:layout_marginStart="@dimen/margin_16"
                 android:layout_marginTop="@dimen/margin_20"
                 android:text="@string/write_support"
                 android:textColor="?attr/colorOnPrimary"
@@ -117,7 +117,7 @@
                 android:id="@+id/text_term"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_20"
+                android:layout_marginStart="@dimen/margin_16"
                 android:layout_marginTop="@dimen/margin_20"
                 android:text="@string/user_term"
                 android:textColor="?attr/colorOnPrimary"

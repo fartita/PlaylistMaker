@@ -4,13 +4,10 @@
         <item name="colorPrimary">@color/yp_black</item>
         <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
-
-
     </style>
 
-    <style name = "MAIN_BACKGROUND">
+    <style name = "MainBackground">
         <item name="android:background">@color/yp_black</item>
     </style>
-
 
 </resources>
