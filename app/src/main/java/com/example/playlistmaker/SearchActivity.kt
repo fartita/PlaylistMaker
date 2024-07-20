@@ -41,6 +41,10 @@ class SearchActivity : AppCompatActivity() {
         searchInputClearButton.setOnClickListener {
             clearSearchForm()
         }
+
+        findViewById<ImageView>(R.id.arrow_back_search).setOnClickListener {
+            finish()
+        }
     }
 
     private fun clearSearchForm() {
