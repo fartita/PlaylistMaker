@@ -27,7 +27,7 @@
                 android:id="@+id/title_main"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fontFamily="@font/suez_one"
+                android:fontFamily="@font/ys_display_medium"
                 android:textSize="@dimen/textSize_22"
                 android:paddingLeft="@dimen/margin_16"
                 android:gravity="center|left"
