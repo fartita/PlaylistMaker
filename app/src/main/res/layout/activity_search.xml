@@ -10,9 +10,8 @@
     <LinearLayout
         android:id="@+id/toolbar_settings"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_marginLeft="@dimen/margin_16"
-        android:layout_weight="0.5"
         android:orientation="horizontal">
 
         <ImageView
@@ -34,7 +33,6 @@
         android:id="@+id/container_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="8"
         android:paddingHorizontal="@dimen/margin_16"
         android:paddingVertical="@dimen/margin_8">
 
@@ -79,9 +77,18 @@
                 app:tint="@color/grey" />
         </FrameLayout>
 
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_24"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"
+        tools:listitem="@layout/item_recycler_search_layout">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 
 
