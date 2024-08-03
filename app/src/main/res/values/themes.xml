@@ -11,4 +11,14 @@
         <item name="android:background">@color/light_blue</item>
     </style>
 
+    <style name = "SearchEdit">
+        <item name="android:backgroundTint">@color/grey_back</item>
+        <item name="android:textColorHint">@color/grey</item>
+        <item name="android:drawableTint">@color/grey</item>
+    </style>
+
+    <style name = "ArrowTheme">
+        <item name="android:src">@drawable/ic_arrow_back</item>
+    </style>
+
 </resources>
