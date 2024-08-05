@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginLeft="@dimen/margin_16"
+        style = "@style/SecondBackground"
         android:orientation="horizontal">
 
         <ImageView
