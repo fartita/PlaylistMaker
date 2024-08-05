@@ -8,6 +8,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.recycler.SearchAdapter
 
 class SearchActivity : AppCompatActivity() {
 
@@ -45,6 +47,9 @@ class SearchActivity : AppCompatActivity() {
         findViewById<ImageView>(R.id.arrow_back_search).setOnClickListener {
             finish()
         }
+
+        val searchResultRv = findViewById<RecyclerView>(R.id.recycler_view)
+        searchResultRv.adapter = SearchAdapter(TestDatabase.getTestDatabase(), this)
     }
 
     private fun clearSearchForm() {

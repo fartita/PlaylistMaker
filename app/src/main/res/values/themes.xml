@@ -4,11 +4,16 @@
         <item name="colorPrimary">@color/light_blue</item>
         <item name="colorPrimaryVariant">@color/grey</item>
         <item name="colorOnPrimary">@color/yp_black</item>
+        <item name="colorPrimaryDark">@color/light_blue</item>
 
     </style>
 
     <style name = "MainBackground">
         <item name="android:background">@color/light_blue</item>
+    </style>
+
+    <style name = "SecondBackground">
+        <item name="android:background">@color/white</item>
     </style>
 
     <style name = "SearchEdit">
