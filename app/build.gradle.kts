@@ -17,6 +17,9 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -49,4 +52,8 @@ dependencies {
     implementation(libs.material.v190)
     implementation(libs.glide)
     annotationProcessor(libs.compiler)
+
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
 }

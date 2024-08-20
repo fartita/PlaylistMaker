@@ -5,6 +5,7 @@
         <item name="colorPrimaryVariant">@color/grey</item>
         <item name="colorOnPrimary">@color/yp_black</item>
         <item name="colorPrimaryDark">@color/light_blue</item>
+        <item name="colorOnSecondary">@color/white</item>
 
     </style>
 
