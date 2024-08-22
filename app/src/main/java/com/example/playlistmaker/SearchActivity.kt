@@ -24,15 +24,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
-    companion object {
-        const val SEARCH_QUERY = "SEARCH_QUERY"
-        private val tracks = ArrayList<Track>()
-    }
-
+    private val SEARCH_QUERY = "SEARCH_QUERY"
     private var searchInputTextUser = ""
 
-
-    private lateinit var tracksAdapter: SearchAdapter
+    private val tracks = ArrayList<Track>()
+    private var tracksAdapter = SearchAdapter(tracks)
     private lateinit var binding: ActivitySearchBinding
 
     private val retrofit = Retrofit.Builder()
@@ -42,14 +38,12 @@ class SearchActivity : AppCompatActivity() {
 
     private val serviceSearch = retrofit.create(SearchApi::class.java)
 
-    private var searchText = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
 
         binding.inputSearchForm.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -61,13 +55,14 @@ class SearchActivity : AppCompatActivity() {
         binding.buttonClearSearchForm.visibility = clearButtonVisibility(binding.inputSearchForm.text)
         binding.buttonClearSearchForm.setOnClickListener {
             clearSearchForm()
+            cleanList()
         }
 
         binding.arrowBackSearch.setOnClickListener {
             finish()
         }
 
-        binding.recyclerView.adapter = SearchAdapter(tracks, this)
+        binding.recyclerView.adapter = tracksAdapter
 
         binding.buttonRefresh.setOnClickListener {
             binding.networkProblem.visibility = View.INVISIBLE
@@ -130,22 +125,38 @@ class SearchActivity : AppCompatActivity() {
                     call: Call<TrackResponse>,
                     response: Response<TrackResponse>,
                 ) {
-                    if (searchText.isNotEmpty() && !response.body()?.results.isNullOrEmpty() && response.code() == Api.SUCCESS_CODE) {
-                        tracks.clear()
-                        tracks.addAll(response.body()?.results!!)
-                        tracksAdapter.notifyDataSetChanged()
-                        binding.nothingWasFound.visibility = View.INVISIBLE
-                        binding.networkProblem.visibility = View.INVISIBLE
-                    } else {
-                        binding.nothingWasFound.visibility = View.VISIBLE
-                        binding.networkProblem.visibility = View.INVISIBLE
+                    if(response.code() == 200){
+                        val result = response.body()?.results!!
+                        if(result.isNotEmpty()){
+                            tracks.clear()
+                            tracks.addAll(result)
+                            tracksAdapter.notifyDataSetChanged()
+                            binding.nothingWasFound.visibility = View.INVISIBLE
+                            binding.networkProblem.visibility = View.INVISIBLE
+                        }
+                        else{
+                            showProblem(View.VISIBLE, View.INVISIBLE)
+                        }
+                    }
+                    else{
+                        showProblem(View.INVISIBLE, View.VISIBLE)
                     }
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    binding.nothingWasFound.visibility = View.INVISIBLE
-                    binding.networkProblem.visibility = View.VISIBLE
+                    showProblem(View.INVISIBLE, View.VISIBLE)
                 }
             })
+    }
+
+    private fun cleanList(){
+        tracks.clear()
+        tracksAdapter.notifyDataSetChanged()
+    }
+
+    private fun showProblem(nothingWasFoundVisible: Int, networkProblemVisible: Int){
+        cleanList()
+        binding.nothingWasFound.visibility = nothingWasFoundVisible
+        binding.networkProblem.visibility = networkProblemVisible
     }
 }

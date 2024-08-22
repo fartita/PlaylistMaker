@@ -12,8 +12,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.model.Track
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-class SearchAdapter(private val items: ArrayList<Track>, private val context: Context) : RecyclerView.Adapter<SearchViewHolder>() {
+class SearchAdapter(private val items: ArrayList<Track>) : RecyclerView.Adapter<SearchViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_recycler_search_layout, parent, false)
@@ -26,13 +28,6 @@ class SearchAdapter(private val items: ArrayList<Track>, private val context: Co
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         holder.bind(items[position])
-        holder.itemView.setOnClickListener {
-            Toast.makeText(
-                context,
-                "${position}: ${items[position].artistName} - ${items[position].trackName}",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
     }
 }
 
@@ -45,13 +40,14 @@ class SearchViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(track: Track) {
         trackName.text = track.trackName
-        artistName.text = "${track.artistName} • ${track.trackTime}"
+        val time = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime).toString()
+        artistName.text = "${track.artistName} • ${time}"
 
         Glide.with(itemView)
             .load(track.artworkUrl100)
             .centerCrop()
             .placeholder(R.drawable.ic_track)
-            .transform(RoundedCorners(10))
+            .transform(RoundedCorners(itemView.resources.getDimensionPixelSize(R.dimen.corner_radius_art)))
             .into(avatar)
 
     }
