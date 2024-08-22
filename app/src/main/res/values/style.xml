@@ -12,7 +12,7 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:layout_weight">0.3</item>
         <item name="android:gravity">center</item>
-        <item name="android:textSize">22sp</item>
+        <item name="android:textSize">@dimen/textSize_22</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
 
@@ -40,6 +40,38 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginEnd">@dimen/margin_20</item>
+    </style>
+
+    <style name="SearchButtonFresh">
+        <item name="cornerRadius">54dp</item>
+    </style>
+
+    <style name="SearchImage">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical|center</item>
+        <item name="android:layout_marginBottom">@dimen/margin_16</item>
+    </style>
+
+    <style name="SearchPlaceholder">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">86dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:visibility">invisible</item>
+    </style>
+
+    <style name="SearchTextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/margin_24</item>
+        <item name="android:layout_marginEnd">@dimen/margin_24</item>
+        <item name="android:layout_marginBottom">@dimen/margin_24</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/textSize_20</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 
 </resources>

@@ -13,4 +13,9 @@
     <string name="email_message">Thanks to developers for this cool app!</string>
     <string name="email_theme">Message for developers of app Playlist maker</string>
     <string name="support_user_agreement" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
+
+    <string name="nothing_found">Nothing found</string>
+    <string name="communications_problem">Problems with communication</string>
+    <string name="network_problem">Download failed. Please check the Internet</string>
+    <string name="refresh_button">Refresh</string>
 </resources>

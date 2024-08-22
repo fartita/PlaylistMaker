@@ -10,9 +10,9 @@
     <LinearLayout
         android:id="@+id/toolbar_settings"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_marginLeft="@dimen/margin_16"
-        android:layout_weight="0.5"
+        style = "@style/SecondBackground"
         android:orientation="horizontal">
 
         <ImageView
@@ -34,7 +34,6 @@
         android:id="@+id/container_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="8"
         android:paddingHorizontal="@dimen/margin_16"
         android:paddingVertical="@dimen/margin_8">
 
@@ -79,9 +78,67 @@
                 app:tint="@color/grey" />
         </FrameLayout>
 
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_24"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="vertical"
+                tools:listitem="@layout/item_recycler_search_layout">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+        <LinearLayout
+            android:id="@+id/nothing_was_found"
+            style="@style/SearchPlaceholder">
+
+            <ImageView
+                style="@style/SearchImage"
+                android:src="@drawable/ic_nothing_found"/>
+
+            <TextView
+                style="@style/SearchTextView"
+                android:text="@string/nothing_found"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/network_problem"
+            style="@style/SearchPlaceholder">
+
+            <ImageView
+                android:src="@drawable/ic_no_internet"
+                style="@style/SearchImage"/>
+
+            <TextView
+                style="@style/SearchTextView"
+                android:text="@string/communications_problem"/>
+
+            <TextView
+                style="@style/SearchTextView"
+                android:text="@string/network_problem"/>
+
+            <Button
+                android:id="@+id/button_refresh"
+                style="@style/SearchButtonFresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="?attr/colorOnPrimary"
+                android:text="@string/refresh_button"
+                android:textColor="?attr/colorOnSecondary"
+                android:textSize="@dimen/textSize_14"
+                android:fontFamily="@font/ys_display_medium"
+                android:inputType="textCapSentences"/>
+
+        </LinearLayout>
+    </FrameLayout>
 
 
 
