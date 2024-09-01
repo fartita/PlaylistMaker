@@ -176,6 +176,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:shadowRadius= "0"
+                    android:textAllCaps = "false"
                     android:layout_marginTop="@dimen/margin_24"
                     android:text="@string/clear_history" />
             </LinearLayout>
