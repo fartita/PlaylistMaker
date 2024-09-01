@@ -42,7 +42,7 @@
         <item name="android:layout_marginEnd">@dimen/margin_20</item>
     </style>
 
-    <style name="SearchButtonFresh">
+    <style name="SearchButton">
         <item name="cornerRadius">54dp</item>
     </style>
 
@@ -73,5 +73,7 @@
         <item name="android:textAlignment">center</item>
         <item name="android:gravity">center_vertical</item>
     </style>
+
+
 
 </resources>

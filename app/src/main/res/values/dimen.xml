@@ -17,4 +17,5 @@
     <dimen name="margin_16">16dp</dimen>
     <dimen name="margin_8">8dp</dimen>
     <dimen name="corner_radius_art">5dp</dimen>
+    <dimen name="history_text_place">52dp</dimen>
 </resources>
