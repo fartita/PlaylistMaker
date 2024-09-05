@@ -54,9 +54,11 @@ class SearchActivity : AppCompatActivity() {
         
         binding.inputSearchForm.apply { 
             setOnFocusChangeListener { view, hasFocus ->
-                binding.historySearch.visibility =
-                    if (hasFocus && binding.inputSearchForm.text.isEmpty()) View.VISIBLE else View.GONE
-                setHistoryList()
+                if(searchHistory.read(sharedPreferences).isNotEmpty()){
+                    binding.historySearch.visibility =
+                        if (hasFocus && binding.inputSearchForm.text.isEmpty()) View.VISIBLE else View.GONE
+                    setHistoryList()
+                }
             }
 
             setOnEditorActionListener { _, actionId, _ ->
@@ -72,6 +74,7 @@ class SearchActivity : AppCompatActivity() {
         binding.buttonClearSearchForm.setOnClickListener {
             clearSearchForm()
             cleanList()
+            if(searchHistory.read(sharedPreferences).isNotEmpty()) binding.historySearch.visibility = View.VISIBLE
         }
 
         binding.arrowBackSearch.setOnClickListener {
@@ -89,6 +92,7 @@ class SearchActivity : AppCompatActivity() {
         binding.clearHistoryButton.setOnClickListener {
             searchHistory.clear(sharedPreferences)
             setHistoryList()
+            binding.historySearch.visibility = View.INVISIBLE
         }
     }
 

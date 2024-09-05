@@ -7,9 +7,12 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
-val MAXIMUM_SIZE = 10
 
 class SearchHistory {
+
+    companion object{
+        const val MAXIMUM_SIZE = 10
+    }
 
     fun setTrack(track: Track, sharedPreferences: SharedPreferences) {
         val tracks = read(sharedPreferences)
