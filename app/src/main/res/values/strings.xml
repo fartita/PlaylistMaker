@@ -18,4 +18,6 @@
     <string name="communications_problem">Problems with communication</string>
     <string name="network_problem">Download failed. Please check the Internet</string>
     <string name="refresh_button">Refresh</string>
+    <string name="clear_history">Clean history</string>
+    <string name="you_search">You searched</string>
 </resources>

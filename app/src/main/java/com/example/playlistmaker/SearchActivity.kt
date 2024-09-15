@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,10 +13,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.api.SearchApi
 import com.example.playlistmaker.constants.Api
+import com.example.playlistmaker.constants.SharedPreference.PRACTICUM_PREFERENCES
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.model.Track
 import com.example.playlistmaker.model.TrackResponse
 import com.example.playlistmaker.recycler.SearchAdapter
+import okhttp3.internal.toImmutableList
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,9 +29,12 @@ class SearchActivity : AppCompatActivity() {
 
     private val SEARCH_QUERY = "SEARCH_QUERY"
     private var searchInputTextUser = ""
-
+    private val searchHistory = SearchHistory()
+    private lateinit var sharedPreferences: SharedPreferences
     private val tracks = ArrayList<Track>()
-    private var tracksAdapter = SearchAdapter(tracks)
+    private val tracksAdapter = SearchAdapter(tracks) {
+        searchHistory.setTrack(it, sharedPreferences)
+    }
     private lateinit var binding: ActivitySearchBinding
 
     private val retrofit = Retrofit.Builder()
@@ -44,18 +50,31 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-        binding.inputSearchForm.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchTrack()
-                true
+        sharedPreferences = getSharedPreferences(PRACTICUM_PREFERENCES, MODE_PRIVATE)
+        
+        binding.inputSearchForm.apply { 
+            setOnFocusChangeListener { view, hasFocus ->
+                if(searchHistory.read(sharedPreferences).isNotEmpty()){
+                    binding.historySearch.visibility =
+                        if (hasFocus && binding.inputSearchForm.text.isEmpty()) View.VISIBLE else View.GONE
+                    setHistoryList()
+                }
             }
-            false
+
+            setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    searchTrack()
+                    true
+                }
+                false
+            }
         }
+
         binding.buttonClearSearchForm.visibility = clearButtonVisibility(binding.inputSearchForm.text)
         binding.buttonClearSearchForm.setOnClickListener {
             clearSearchForm()
             cleanList()
+            if(searchHistory.read(sharedPreferences).isNotEmpty()) binding.historySearch.visibility = View.VISIBLE
         }
 
         binding.arrowBackSearch.setOnClickListener {
@@ -69,6 +88,12 @@ class SearchActivity : AppCompatActivity() {
             searchTrack()
         }
         inputText()
+
+        binding.clearHistoryButton.setOnClickListener {
+            searchHistory.clear(sharedPreferences)
+            setHistoryList()
+            binding.historySearch.visibility = View.INVISIBLE
+        }
     }
 
     private fun clearSearchForm() {
@@ -109,6 +134,15 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 binding.buttonClearSearchForm.visibility = clearButtonVisibility(s)
                 searchInputTextUser = binding.inputSearchForm.text.toString()
+                if (binding.inputSearchForm.hasFocus() && s?.isEmpty() == true){
+                        binding.nothingWasFound.visibility = View.INVISIBLE
+                        binding.networkProblem.visibility = View.INVISIBLE
+                        if (searchHistory.read(sharedPreferences).isNotEmpty()) binding.historySearch.visibility =View.VISIBLE
+                    }
+                else{
+                    binding.historySearch.visibility =View.GONE
+                }
+                setHistoryList()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -158,5 +192,12 @@ class SearchActivity : AppCompatActivity() {
         cleanList()
         binding.nothingWasFound.visibility = nothingWasFoundVisible
         binding.networkProblem.visibility = networkProblemVisible
+    }
+
+    private fun setHistoryList(){
+        val historyTracks = ArrayList<Track>().apply {
+            addAll(searchHistory.read(sharedPreferences))
+        }
+        binding.historySearchList.adapter = SearchAdapter(historyTracks) {}
     }
 }

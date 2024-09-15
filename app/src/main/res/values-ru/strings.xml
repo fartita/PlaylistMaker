@@ -16,4 +16,6 @@
     <string name="communications_problem">Проблемы со связью</string>
     <string name="network_problem">Загрузка не удалась. Проверьте подключение к интернету</string>
     <string name="refresh_button">Обновить</string>
+    <string name="clear_history">Очистить историю</string>
+    <string name="you_search">Вы искали</string>
 </resources>

@@ -126,7 +126,7 @@
 
             <Button
                 android:id="@+id/button_refresh"
-                style="@style/SearchButtonFresh"
+                style="@style/SearchButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -138,6 +138,49 @@
                 android:inputType="textCapSentences"/>
 
         </LinearLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/historySearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/SearchTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/history_text_place"
+                    android:gravity="center"
+                    android:text="@string/you_search" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/historySearchList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_recycler_search_layout" />
+
+                <Button
+                    android:id="@+id/clearHistoryButton"
+                    style="@style/SearchButton"
+                    android:fontFamily="@font/ys_display_medium"
+                    android:backgroundTint="?attr/colorOnPrimary"
+                    android:textColor="?attr/colorOnSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:shadowRadius= "0"
+                    android:textAllCaps = "false"
+                    android:layout_marginTop="@dimen/margin_24"
+                    android:text="@string/clear_history" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
     </FrameLayout>
 
 

@@ -6,17 +6,26 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlistmaker.constants.SharedPreference.PRACTICUM_PREFERENCES
+import com.example.playlistmaker.constants.SharedPreference.THEME_KEY
+import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivitySettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        findViewById<ImageView>(R.id.arrow_back_settings).setOnClickListener {
+        binding.arrowBackSettings.setOnClickListener {
             finish()
         }
 
-        findViewById<ImageView>(R.id.image_share).setOnClickListener {
+        binding.imageShare.setOnClickListener{
             Intent(Intent.ACTION_SEND).apply {
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.share_link))
                 type = "text/plain"
@@ -24,14 +33,14 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<ImageView>(R.id.image_term).setOnClickListener {
+        binding.imageTerm.setOnClickListener {
             Intent(Intent.ACTION_VIEW).apply {
                 data = Uri.parse(getString(R.string.support_user_agreement))
                 startActivity(Intent.createChooser(this, null))
             }
         }
 
-        findViewById<ImageView>(R.id.image_support).setOnClickListener() {
+        binding.imageSupport.setOnClickListener {
             Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_address)))
@@ -40,5 +49,14 @@ class SettingsActivity : AppCompatActivity() {
                 startActivity(Intent.createChooser(this, null))
             }
         }
+
+        val sharedPreferences = getSharedPreferences(PRACTICUM_PREFERENCES, MODE_PRIVATE)
+        val darkTheme = sharedPreferences.getBoolean(THEME_KEY, false)
+        binding.switchToDarkTheme.setChecked(darkTheme)
+
+        binding.switchToDarkTheme.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+        }
+
     }
 }
