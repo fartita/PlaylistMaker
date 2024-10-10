@@ -1,8 +1,11 @@
 package com.example.playlistmaker
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -10,6 +13,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.api.SearchApi
@@ -30,15 +34,22 @@ class SearchActivity : AppCompatActivity() {
 
     private val SEARCH_QUERY = "SEARCH_QUERY"
     private var searchInputTextUser = ""
+
+    private val SEARCH_DEBOUNCE_DELAY = 2000L
+    private val CLICK_DEBOUNCE_DELAY = 1000L
+
+
     private val searchHistory by lazy {
         SearchHistory(this)
     }
     private lateinit var sharedPreferences: SharedPreferences
     private val tracks = ArrayList<Track>()
+
     private val tracksAdapter = SearchAdapter(tracks) {
-        searchHistory.setTrack(it)
-        val displayIntent = Intent(this, PlayerActivity::class.java)
-        startActivity(displayIntent)
+        if(clickDebounce()){
+            searchHistory.setTrack(it)
+            PlayerActivity.startActivity(this)
+        }
     }
     private lateinit var binding: ActivitySearchBinding
 
@@ -48,6 +59,10 @@ class SearchActivity : AppCompatActivity() {
         .build()
 
     private val serviceSearch = retrofit.create(SearchApi::class.java)
+
+    private val searchRunnable = Runnable { searchTrack() }
+    private val handler = Handler(Looper.getMainLooper())
+    private var isClickAllowed = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,12 +155,14 @@ class SearchActivity : AppCompatActivity() {
                 binding.buttonClearSearchForm.visibility = clearButtonVisibility(s)
                 searchInputTextUser = binding.inputSearchForm.text.toString()
                 if (binding.inputSearchForm.hasFocus() && s?.isEmpty() == true){
+                        handler.removeCallbacks(searchRunnable)
                         binding.nothingWasFound.visibility = View.INVISIBLE
                         binding.networkProblem.visibility = View.INVISIBLE
                         if (searchHistory.read().isNotEmpty()) binding.historySearch.visibility =View.VISIBLE
                     }
                 else{
                     binding.historySearch.visibility =View.GONE
+                    searchDebounce()
                 }
                 setHistoryList()
             }
@@ -158,15 +175,21 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchTrack() {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.recyclerView.visibility = View.GONE
+        binding.nothingWasFound.visibility = View.GONE
+        binding.networkProblem.visibility = View.GONE
         serviceSearch.searchTrack(binding.inputSearchForm.text.toString())
             .enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(
                     call: Call<TrackResponse>,
                     response: Response<TrackResponse>,
                 ) {
+                    binding.progressBar.visibility = View.GONE
                     if(response.code() == 200){
                         val result = response.body()?.results!!
                         if(result.isNotEmpty()){
+                            binding.recyclerView.visibility = View.VISIBLE
                             tracks.clear()
                             tracks.addAll(result)
                             tracksAdapter.notifyDataSetChanged()
@@ -205,8 +228,21 @@ class SearchActivity : AppCompatActivity() {
         }
         binding.historySearchList.adapter = SearchAdapter(historyTracks) {
             searchHistory.setTrack(it)
-            val displayIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
-            startActivity(displayIntent)
+            PlayerActivity.startActivity(this)
         }
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 }
