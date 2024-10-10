@@ -6,6 +6,9 @@
         <item name="colorOnPrimary">@color/yp_black</item>
         <item name="colorPrimaryDark">@color/light_blue</item>
         <item name="colorOnSecondary">@color/white</item>
+        <item name="colorAccent">@color/grey</item>
+        <item name="colorSurface">@color/grey_back</item>
+
 
     </style>
 
