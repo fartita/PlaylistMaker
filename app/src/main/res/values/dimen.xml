@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="textSize_12">12sp</dimen>
+    <dimen name="textSize_13">13sp</dimen>
     <dimen name="textSize_14">14sp</dimen>
     <dimen name="textSize_16">16sp</dimen>
     <dimen name="textSize_18">18sp</dimen>
@@ -18,4 +19,7 @@
     <dimen name="margin_8">8dp</dimen>
     <dimen name="corner_radius_art">5dp</dimen>
     <dimen name="history_text_place">52dp</dimen>
+
+    <dimen name="artwork_top_margin">42dp</dimen>
+    <dimen name="header_size">26sp</dimen>
 </resources>

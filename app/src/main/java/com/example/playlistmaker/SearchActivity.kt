@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -29,11 +30,15 @@ class SearchActivity : AppCompatActivity() {
 
     private val SEARCH_QUERY = "SEARCH_QUERY"
     private var searchInputTextUser = ""
-    private val searchHistory = SearchHistory()
+    private val searchHistory by lazy {
+        SearchHistory(this)
+    }
     private lateinit var sharedPreferences: SharedPreferences
     private val tracks = ArrayList<Track>()
     private val tracksAdapter = SearchAdapter(tracks) {
-        searchHistory.setTrack(it, sharedPreferences)
+        searchHistory.setTrack(it)
+        val displayIntent = Intent(this, PlayerActivity::class.java)
+        startActivity(displayIntent)
     }
     private lateinit var binding: ActivitySearchBinding
 
@@ -54,7 +59,7 @@ class SearchActivity : AppCompatActivity() {
         
         binding.inputSearchForm.apply { 
             setOnFocusChangeListener { view, hasFocus ->
-                if(searchHistory.read(sharedPreferences).isNotEmpty()){
+                if(searchHistory.read().isNotEmpty()){
                     binding.historySearch.visibility =
                         if (hasFocus && binding.inputSearchForm.text.isEmpty()) View.VISIBLE else View.GONE
                     setHistoryList()
@@ -74,7 +79,7 @@ class SearchActivity : AppCompatActivity() {
         binding.buttonClearSearchForm.setOnClickListener {
             clearSearchForm()
             cleanList()
-            if(searchHistory.read(sharedPreferences).isNotEmpty()) binding.historySearch.visibility = View.VISIBLE
+            if(searchHistory.read().isNotEmpty()) binding.historySearch.visibility = View.VISIBLE
         }
 
         binding.arrowBackSearch.setOnClickListener {
@@ -137,7 +142,7 @@ class SearchActivity : AppCompatActivity() {
                 if (binding.inputSearchForm.hasFocus() && s?.isEmpty() == true){
                         binding.nothingWasFound.visibility = View.INVISIBLE
                         binding.networkProblem.visibility = View.INVISIBLE
-                        if (searchHistory.read(sharedPreferences).isNotEmpty()) binding.historySearch.visibility =View.VISIBLE
+                        if (searchHistory.read().isNotEmpty()) binding.historySearch.visibility =View.VISIBLE
                     }
                 else{
                     binding.historySearch.visibility =View.GONE
@@ -196,8 +201,12 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setHistoryList(){
         val historyTracks = ArrayList<Track>().apply {
-            addAll(searchHistory.read(sharedPreferences))
+            addAll(searchHistory.read())
         }
-        binding.historySearchList.adapter = SearchAdapter(historyTracks) {}
+        binding.historySearchList.adapter = SearchAdapter(historyTracks) {
+            searchHistory.setTrack(it)
+            val displayIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
+            startActivity(displayIntent)
+        }
     }
 }
