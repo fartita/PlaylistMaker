@@ -55,6 +55,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/margin_12"
+                app:thumbTint="?colorAccent"
+                app:trackTint="?colorAccent"
                 app:layout_constraintBottom_toBottomOf="@id/text_dark_theme"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/text_dark_theme" />

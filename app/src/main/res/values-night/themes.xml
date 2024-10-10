@@ -6,6 +6,8 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/yp_black</item>
         <item name="colorOnSecondary">@color/yp_black</item>
+        <item name="colorAccent">@color/switch_color</item>
+        <item name="colorSurface">@color/switch_track_color</item>
 
     </style>
 
