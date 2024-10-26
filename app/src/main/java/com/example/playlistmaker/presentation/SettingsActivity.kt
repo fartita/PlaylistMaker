@@ -1,14 +1,12 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.constants.SharedPreference.PRACTICUM_PREFERENCES
-import com.example.playlistmaker.constants.SharedPreference.THEME_KEY
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.constants.SharedPreference.PRACTICUM_PREFERENCES
+import com.example.playlistmaker.domain.constants.SharedPreference.THEME_KEY
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {

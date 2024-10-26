@@ -1,10 +1,11 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation
 
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.constants.SharedPreference.PRACTICUM_PREFERENCES
-import com.example.playlistmaker.constants.SharedPreference.THEME_KEY
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.domain.constants.SharedPreference.PRACTICUM_PREFERENCES
+import com.example.playlistmaker.domain.constants.SharedPreference.THEME_KEY
 
 
 class App : Application() {

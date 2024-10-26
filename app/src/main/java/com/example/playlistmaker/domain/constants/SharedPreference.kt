@@ -1,4 +1,4 @@
-package com.example.playlistmaker.constants
+package com.example.playlistmaker.domain.constants
 
 object SharedPreference {
     const val PRACTICUM_PREFERENCES = "playlist_maker_preferences"
