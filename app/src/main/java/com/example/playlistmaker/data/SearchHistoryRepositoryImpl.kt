@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.api
+package com.example.playlistmaker.data
 
 import android.content.Context
 
@@ -11,7 +11,7 @@ import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
 
-class SearchHistoryInteractorImpl(context: Context): OneTrackRepository, TrackHistoryRepository {
+class SearchHistoryRepositoryImpl(context: Context): OneTrackRepository, TrackHistoryRepository {
 
     companion object{
         const val MAXIMUM_SIZE = 10
@@ -58,7 +58,7 @@ class SearchHistoryInteractorImpl(context: Context): OneTrackRepository, TrackHi
         sharedPreferenceRepository.remove(TRACKS_KEY)
     }
 
-    fun read(): MutableList<TracksDto> {
+    private fun read(): MutableList<TracksDto> {
         val json = sharedPreferenceRepository.getString(TRACKS_KEY) ?: return mutableListOf()
         val listOfMyClassObject: Type = object : TypeToken<ArrayList<TracksDto>?>() {}.type
         return Gson().fromJson(json, listOfMyClassObject)

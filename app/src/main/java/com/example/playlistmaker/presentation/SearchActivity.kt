@@ -25,7 +25,7 @@ class SearchActivity : AppCompatActivity() {
 
 
     private val historyInteractor by lazy {
-        Creator.getHistoryRepository(this)
+        Creator.getHistoryInteractor(this)
     }
     private val tracksInteractor = Creator.provideTrackInteractor()
     private val tracksUI = ArrayList<Track>()

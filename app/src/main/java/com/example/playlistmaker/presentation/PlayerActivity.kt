@@ -2,7 +2,6 @@ package com.example.playlistmaker.presentation
 
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -54,7 +53,7 @@ class PlayerActivity: AppCompatActivity(), PlayerPresenter  {
         val artwork = findViewById<ImageView>(R.id.cover)
 
         mainThreadHandler = Handler(Looper.getMainLooper())
-        val item =  Creator.getOneTrackRepository(applicationContext).getTrack()
+        val item =  Creator.getHistoryInteractor(applicationContext).getTrack()
 
         playControlInteractor.preparePlayer(item)
 
