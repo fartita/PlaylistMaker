@@ -14,9 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.Player
-import com.example.playlistmaker.domain.PlayControl
-import com.example.playlistmaker.domain.PlayControlImpl
+import com.example.playlistmaker.domain.PlayControlInteractor
 import com.example.playlistmaker.domain.PlayerPresenter
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,13 +22,7 @@ import java.util.*
 class PlayerActivity: AppCompatActivity(), PlayerPresenter  {
 
     companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
         private const val DELAY_MILLIS = 25L
-        private const val TIME_FORMAT = "mm:ss"
-        private const val ZERO_TIME = "00:00"
 
         fun startActivity(context: Context) {
             val intent = Intent(context, PlayerActivity::class.java)
@@ -38,18 +30,16 @@ class PlayerActivity: AppCompatActivity(), PlayerPresenter  {
         }
     }
 
-    private var playerState = STATE_DEFAULT
-    private lateinit var playControl: PlayControl
+    private lateinit var playControlInteractor: PlayControlInteractor
     private lateinit var playButton: ImageButton
     private lateinit var progressTimeView: TextView
-    private var mediaPlayer = MediaPlayer()
     private var mainThreadHandler: Handler? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
-        playControl = Creator.createPlayControl(this)
+        playControlInteractor = Creator.createPlayControl(this)
 
         playButton = findViewById(R.id.playButton)
         progressTimeView = findViewById(R.id.progressTime)
@@ -66,10 +56,10 @@ class PlayerActivity: AppCompatActivity(), PlayerPresenter  {
         mainThreadHandler = Handler(Looper.getMainLooper())
         val item =  Creator.getOneTrackRepository(applicationContext).getTrack()
 
-        playControl.preparePlayer(item)
+        playControlInteractor.preparePlayer(item)
 
         playButton.setOnClickListener {
-            playControl.playbackControl()
+            playControlInteractor.playbackControl()
         }
 
         val imageBack = findViewById<ImageView>(R.id.backButton)
@@ -96,11 +86,9 @@ class PlayerActivity: AppCompatActivity(), PlayerPresenter  {
 
 
     override fun startPlayer() {
-        mediaPlayer.start()
         playButton.setImageResource(R.drawable.pause_button)
-        playerState = STATE_PLAYING
         mainThreadHandler?.post(
-            playControl.createUpdateProgressTimeRunnable()
+            playControlInteractor.createUpdateProgressTimeRunnable()
         )
     }
 
@@ -127,12 +115,12 @@ class PlayerActivity: AppCompatActivity(), PlayerPresenter  {
 
     override fun onPause() {
         super.onPause()
-        playControl.pausePlayer()
+        playControlInteractor.pausePlayer()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        playControl.release()
+        playControlInteractor.release()
     }
 
 }

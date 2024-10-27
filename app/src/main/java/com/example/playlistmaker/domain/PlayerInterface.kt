@@ -2,7 +2,7 @@ package com.example.playlistmaker.domain
 
 import com.example.playlistmaker.domain.model.Track
 
-interface PlayerInteractor {
+interface PlayerInterface {
     fun preparePlayer(track: Track, prepareCallback: () -> Unit, completeCallback: () -> Unit)
     fun startPlayer()
     fun pausePlayer()

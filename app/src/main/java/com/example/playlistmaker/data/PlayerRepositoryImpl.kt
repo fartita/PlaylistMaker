@@ -1,11 +1,10 @@
 package com.example.playlistmaker.data
 
 import android.media.MediaPlayer
-import com.example.playlistmaker.domain.PlayControlImpl
-import com.example.playlistmaker.domain.PlayerInteractor
+import com.example.playlistmaker.domain.PlayerInterface
 import com.example.playlistmaker.domain.model.Track
 
-class Player  : PlayerInteractor {
+class PlayerRepositoryImpl  : PlayerInterface {
     private var mediaPlayer = MediaPlayer()
 
 

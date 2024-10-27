@@ -4,18 +4,18 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.Creator
-import com.example.playlistmaker.domain.constants.SharedPreference.PRACTICUM_PREFERENCES
-import com.example.playlistmaker.domain.constants.SharedPreference.THEME_KEY
+
+import com.example.playlistmaker.domain.settings.SettingsInteractor
 
 
 class App : Application() {
 
     var darkTheme = false
-    private lateinit var sharedPreferences : SharedPreferences
+    private lateinit var settingsInteractor: SettingsInteractor
 
     override fun onCreate() {
-        sharedPreferences = getSharedPreferences(PRACTICUM_PREFERENCES,MODE_PRIVATE)
-        darkTheme = sharedPreferences.getBoolean(THEME_KEY, darkTheme)
+        settingsInteractor = Creator.getSettingInteractor(applicationContext)
+        darkTheme = settingsInteractor.getDarkTheme()
         super.onCreate()
         switchTheme(darkTheme)
     }
@@ -29,6 +29,6 @@ class App : Application() {
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )
-        sharedPreferences.edit().putBoolean(THEME_KEY, darkTheme).apply()
+        settingsInteractor.setDarkTheme(darkTheme)
     }
 }

@@ -2,7 +2,7 @@ package com.example.playlistmaker.domain
 
 import com.example.playlistmaker.domain.model.Track
 
-class PlayControlImpl(val mediaPlayer: PlayerInteractor, val playerPresenter: PlayerPresenter): PlayControl {
+class PlayControlInteractorImpl(val mediaPlayer: PlayerInterface, val playerPresenter: PlayerPresenter): PlayControlInteractor {
     companion object {
         private const val STATE_DEFAULT = 0
         private const val STATE_PREPARED = 1

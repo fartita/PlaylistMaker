@@ -4,20 +4,23 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.constants.SharedPreference.PRACTICUM_PREFERENCES
-import com.example.playlistmaker.domain.constants.SharedPreference.THEME_KEY
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import com.example.playlistmaker.domain.settings.SettingsInteractor
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
+    private lateinit var settingsInteractor: SettingsInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        settingsInteractor = Creator.getSettingInteractor(applicationContext)
 
         binding.arrowBackSettings.setOnClickListener {
             finish()
@@ -47,9 +50,7 @@ class SettingsActivity : AppCompatActivity() {
                 startActivity(Intent.createChooser(this, null))
             }
         }
-
-        val sharedPreferences = getSharedPreferences(PRACTICUM_PREFERENCES, MODE_PRIVATE)
-        val darkTheme = sharedPreferences.getBoolean(THEME_KEY, false)
+        val darkTheme = settingsInteractor.getDarkTheme()
         binding.switchToDarkTheme.setChecked(darkTheme)
 
         binding.switchToDarkTheme.setOnCheckedChangeListener { switcher, checked ->

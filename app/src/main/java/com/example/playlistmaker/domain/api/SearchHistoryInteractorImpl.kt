@@ -1,29 +1,24 @@
-package com.example.playlistmaker.data
+package com.example.playlistmaker.domain.api
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
+
 import com.example.playlistmaker.data.dto.TracksDto
-import com.example.playlistmaker.domain.api.OneTrackRepository
-import com.example.playlistmaker.domain.api.TrackHistoryRepository
-import com.example.playlistmaker.domain.constants.SharedPreference.PRACTICUM_PREFERENCES
-import com.example.playlistmaker.domain.constants.SharedPreference.TRACKS_KEY
+import com.example.playlistmaker.data.shared_pref.SharedPreferenceRepository
+import com.example.playlistmaker.data.shared_pref.SharedPreferenceRepositoryImp
 import com.example.playlistmaker.domain.model.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
 
-class SearchHistory(context: Context): OneTrackRepository, TrackHistoryRepository {
+class SearchHistoryInteractorImpl(context: Context): OneTrackRepository, TrackHistoryRepository {
 
     companion object{
         const val MAXIMUM_SIZE = 10
     }
 
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
-        PRACTICUM_PREFERENCES,
-        MODE_PRIVATE
-    )
+    private val TRACKS_KEY = "track_key"
+    private val sharedPreferenceRepository: SharedPreferenceRepository = SharedPreferenceRepositoryImp(context)
 
     override fun getTrackList(): List<Track> {
         return read().map {
@@ -60,28 +55,18 @@ class SearchHistory(context: Context): OneTrackRepository, TrackHistoryRepositor
     }
 
     override fun clear() {
-        sharedPreferences.edit()
-            .remove(TRACKS_KEY)
-            .apply()
+        sharedPreferenceRepository.remove(TRACKS_KEY)
     }
 
     fun read(): MutableList<TracksDto> {
-        val json = sharedPreferences.getString(TRACKS_KEY, null) ?: return mutableListOf()
+        val json = sharedPreferenceRepository.getString(TRACKS_KEY) ?: return mutableListOf()
         val listOfMyClassObject: Type = object : TypeToken<ArrayList<TracksDto>?>() {}.type
         return Gson().fromJson(json, listOfMyClassObject)
     }
 
     private fun write(tracks: MutableList<TracksDto>) {
         val json = Gson().toJson(tracks)
-        sharedPreferences.edit()
-            .putString(TRACKS_KEY, json)
-            .apply()
-    }
-
-    fun clear(sharedPreferences: SharedPreferences){
-        sharedPreferences.edit()
-            .remove(TRACKS_KEY)
-            .apply()
+        sharedPreferenceRepository.putString(TRACKS_KEY, json)
     }
 
     override fun getTrack(): Track {
