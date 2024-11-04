@@ -9,16 +9,19 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.PlayControlInteractor
 import com.example.playlistmaker.domain.PlayerPresenter
+import com.example.playlistmaker.presentation.viewmodels.player.PlayerState
+import com.example.playlistmaker.presentation.viewmodels.player.PlayerViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PlayerActivity: AppCompatActivity(), PlayerPresenter  {
+class PlayerActivity: AppCompatActivity() {
 
     companion object {
         private const val DELAY_MILLIS = 25L
@@ -29,16 +32,16 @@ class PlayerActivity: AppCompatActivity(), PlayerPresenter  {
         }
     }
 
-    private lateinit var playControlInteractor: PlayControlInteractor
     private lateinit var playButton: ImageButton
     private lateinit var progressTimeView: TextView
-    private var mainThreadHandler: Handler? = null
+
+    private lateinit var viewModel: PlayerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
-        playControlInteractor = Creator.createPlayControl(this)
+        viewModel = ViewModelProvider(this, PlayerViewModel.getViewModelFactory())[PlayerViewModel::class.java]
 
         playButton = findViewById(R.id.playButton)
         progressTimeView = findViewById(R.id.progressTime)
@@ -52,13 +55,11 @@ class PlayerActivity: AppCompatActivity(), PlayerPresenter  {
         val country = findViewById<TextView>(R.id.countryName)
         val artwork = findViewById<ImageView>(R.id.cover)
 
-        mainThreadHandler = Handler(Looper.getMainLooper())
         val item =  Creator.getHistoryInteractor(applicationContext).getTrack()
 
-        playControlInteractor.preparePlayer(item)
 
         playButton.setOnClickListener {
-            playControlInteractor.playbackControl()
+            viewModel.playbackControl()
         }
 
         val imageBack = findViewById<ImageView>(R.id.backButton)
@@ -81,45 +82,42 @@ class PlayerActivity: AppCompatActivity(), PlayerPresenter  {
             .centerCrop()
             .transform(RoundedCorners(applicationContext.resources.getDimensionPixelSize(R.dimen.margin_8)))
             .into(artwork)
+
+        viewModel.observeState().observe(this){
+            render(it)
+        }
+
+        viewModel.observeTime().observe(this){
+            progressTimeViewUpdate(it)
+        }
+
+        viewModel.prepare(item.previewUrl)
     }
 
 
-    override fun startPlayer() {
+    private fun startPlayer() {
         playButton.setImageResource(R.drawable.pause_button)
-        mainThreadHandler?.post(
-            playControlInteractor.createUpdateProgressTimeRunnable()
-        )
     }
 
-    override fun pausePlayer() {
+    private fun pausePlayer() {
         playButton.setImageResource(R.drawable.play_button)
     }
 
-    override fun progressTimeViewUpdate(progressTime: String) {
+    private fun progressTimeViewUpdate(progressTime: String) {
         progressTimeView.text = progressTime
-    }
-
-    override fun playButtonEnabled() {
-        playButton.isEnabled = true
-    }
-
-    override fun postDelayed(runnable: Runnable) {
-        mainThreadHandler?.postDelayed(runnable, DELAY_MILLIS)
-    }
-
-    override fun removeCallbacks(runnable: Runnable) {
-        mainThreadHandler?.removeCallbacks(runnable)
     }
 
 
     override fun onPause() {
         super.onPause()
-        playControlInteractor.pausePlayer()
+        viewModel.playbackControl()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        playControlInteractor.release()
+    private fun render(state: PlayerState){
+        when(state){
+            PlayerState.PLAYING -> startPlayer()
+            PlayerState.PAUSED, PlayerState.PREPARED -> pausePlayer()
+        }
     }
 
 }

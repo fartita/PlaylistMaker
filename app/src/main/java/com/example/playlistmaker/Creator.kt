@@ -25,8 +25,8 @@ object Creator {
     fun provideTrackInteractor(): TracksInteractor {
         return TracksInteractorImpl(getTrackRepository())
     }
-    fun createPlayControl(playerPresenter: PlayerPresenter): PlayControlInteractor {
-        return PlayControlInteractorImpl(PlayerRepositoryImpl(), playerPresenter)
+    fun createPlayControl(): PlayControlInteractor {
+        return PlayControlInteractorImpl(PlayerRepositoryImpl())
     }
 
     fun getHistoryInteractor(context: Context): HistoryInteractor{

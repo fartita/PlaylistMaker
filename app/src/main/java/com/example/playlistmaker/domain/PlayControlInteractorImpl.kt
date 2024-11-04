@@ -1,68 +1,51 @@
 package com.example.playlistmaker.domain
 
 import com.example.playlistmaker.domain.model.Track
+import com.example.playlistmaker.presentation.viewmodels.player.PlayerState
 
-class PlayControlInteractorImpl(val mediaPlayer: PlayerInterface, val playerPresenter: PlayerPresenter): PlayControlInteractor {
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-    }
-    private var playerState = STATE_DEFAULT
-    private fun setPlayerState() {
-        playerState = STATE_PREPARED
-    }
-    private fun setPlayerStatePrepared() {
-        playerState = STATE_PREPARED
-        playerPresenter.playButtonEnabled()
-    }
-    override fun playbackControl() {
+class PlayControlInteractorImpl(val mediaPlayer: PlayerInterface): PlayControlInteractor {
+
+    private var playerState = PlayerState.PREPARED
+
+    override fun playbackControl(): PlayerState {
         when (playerState) {
-            STATE_PLAYING -> {
+            PlayerState.PLAYING -> {
                 pausePlayer()
             }
-            STATE_PREPARED, STATE_PAUSED -> {
+            PlayerState.PREPARED, PlayerState.PAUSED -> {
                 startPlayer()
             }
         }
+        return playerState
     }
 
-    override fun preparePlayer(item: Track) {
-        mediaPlayer.preparePlayer(item, this::setPlayerStatePrepared, this::setPlayerState)
+    override fun preparePlayer(trackUrl: String) {
+        mediaPlayer.preparePlayer(trackUrl)
     }
 
     private fun startPlayer() {
         mediaPlayer.startPlayer()
-        playerPresenter.startPlayer()
-        playerState = STATE_PLAYING
+        playerState = PlayerState.PLAYING
     }
     override fun pausePlayer() {
         mediaPlayer.pausePlayer()
-        playerPresenter.pausePlayer()
-        playerState = STATE_PAUSED
+        playerState = PlayerState.PAUSED
     }
-    override fun createUpdateProgressTimeRunnable(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                when (playerState) {
-                    STATE_PLAYING -> {
-                        playerPresenter.progressTimeViewUpdate(TimeFormatter.format(mediaPlayer.getCurrentPosition()))
-                        playerPresenter.postDelayed(this)
-                    }
-                    STATE_PAUSED -> {
-                        playerPresenter.removeCallbacks(this)
-                    }
-                    STATE_PREPARED -> {
-                        playerPresenter.pausePlayer()
-                        playerPresenter.progressTimeViewUpdate(TimeFormatter.ZERO_TIME)
-                        playerPresenter.removeCallbacks(this)
-                    }
-                }
-            }
-        }
-    }
+
     override fun release() {
         mediaPlayer.release()
+    }
+
+    override fun setStateOnChangeListener(callBack: (PlayerState) -> Unit) {
+        mediaPlayer.setOnStateChangeListener { state ->
+            this.playerState = state
+            callBack(state)
+        }
+    }
+
+    override fun getProgressTime(): String {
+        return if (playerState == PlayerState.PREPARED) TimeFormatter.ZERO_TIME else TimeFormatter.format(
+            mediaPlayer.getCurrentPosition()
+        )
     }
 }
