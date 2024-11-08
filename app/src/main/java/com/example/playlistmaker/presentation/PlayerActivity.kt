@@ -3,8 +3,6 @@ package com.example.playlistmaker.presentation
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,9 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.PlayControlInteractor
-import com.example.playlistmaker.domain.PlayerPresenter
-import com.example.playlistmaker.presentation.viewmodels.player.PlayerState
+import com.example.playlistmaker.data.states.PlayerState
 import com.example.playlistmaker.presentation.viewmodels.player.PlayerViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,7 +20,6 @@ import java.util.*
 class PlayerActivity: AppCompatActivity() {
 
     companion object {
-        private const val DELAY_MILLIS = 25L
 
         fun startActivity(context: Context) {
             val intent = Intent(context, PlayerActivity::class.java)
@@ -55,7 +50,7 @@ class PlayerActivity: AppCompatActivity() {
         val country = findViewById<TextView>(R.id.countryName)
         val artwork = findViewById<ImageView>(R.id.cover)
 
-        val item =  Creator.getHistoryInteractor(applicationContext).getTrack()
+
 
 
         playButton.setOnClickListener {
@@ -64,7 +59,7 @@ class PlayerActivity: AppCompatActivity() {
 
         val imageBack = findViewById<ImageView>(R.id.backButton)
         imageBack.setOnClickListener { finish() }
-
+        val item =  viewModel.getTrack(applicationContext)
 
 
         name.text = item.trackName

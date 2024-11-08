@@ -2,7 +2,7 @@ package com.example.playlistmaker.data
 
 import android.media.MediaPlayer
 import com.example.playlistmaker.domain.PlayerInterface
-import com.example.playlistmaker.presentation.viewmodels.player.PlayerState
+import com.example.playlistmaker.data.states.PlayerState
 
 class PlayerRepositoryImpl  : PlayerInterface {
 

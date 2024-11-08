@@ -9,36 +9,34 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.states.SearchState
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.model.Track
-import com.example.playlistmaker.domain.api.TracksInteractor.TrackConsumer
 import com.example.playlistmaker.presentation.recycler.SearchAdapter
+import com.example.playlistmaker.presentation.viewmodels.search.SearchViewModel
 
 class SearchActivity : AppCompatActivity() {
 
     private val SEARCH_QUERY = "SEARCH_QUERY"
     private var searchInputTextUser = ""
 
-    private val SEARCH_DEBOUNCE_DELAY = 2000L
     private val CLICK_DEBOUNCE_DELAY = 1000L
 
 
-    private val historyInteractor by lazy {
-        Creator.getHistoryInteractor(this)
-    }
-    private val tracksInteractor = Creator.provideTrackInteractor()
+    private lateinit var viewModel: SearchViewModel
     private val tracksUI = ArrayList<Track>()
 
     private val tracksAdapter = SearchAdapter(tracksUI) {
         if(clickDebounce()){
-            historyInteractor.setTrack(it)
+            viewModel.setTrack(it)
             PlayerActivity.startActivity(this)
         }
     }
     private lateinit var binding: ActivitySearchBinding
 
-    private val searchRunnable = Runnable { searchTrack() }
     private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
 
@@ -48,19 +46,22 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        viewModel = ViewModelProvider(
+            this,
+            SearchViewModel.getViewModelFactory()
+        )[SearchViewModel::class.java]
+        viewModel.prepareView(applicationContext)
         
         binding.inputSearchForm.apply { 
             setOnFocusChangeListener { view, hasFocus ->
-                if(historyInteractor.getTrackList().isNotEmpty()){
-                    binding.historySearch.visibility =
-                        if (hasFocus && binding.inputSearchForm.text.isEmpty()) View.VISIBLE else View.GONE
-                    setHistoryList()
-                }
+                viewModel.searchDebounce(binding.inputSearchForm.text.toString())
             }
 
             setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    searchTrack()
+                    if(binding.inputSearchForm.text.isNotEmpty()){
+                        viewModel.searchDebounce(binding.inputSearchForm.text.toString())
+                    }
                     true
                 }
                 false
@@ -70,8 +71,7 @@ class SearchActivity : AppCompatActivity() {
         binding.buttonClearSearchForm.visibility = clearButtonVisibility(binding.inputSearchForm.text)
         binding.buttonClearSearchForm.setOnClickListener {
             clearSearchForm()
-            cleanList()
-            if(historyInteractor.getTrackList().isNotEmpty()) binding.historySearch.visibility = View.VISIBLE
+            viewModel.searchDebounce("")
         }
 
         binding.arrowBackSearch.setOnClickListener {
@@ -82,14 +82,12 @@ class SearchActivity : AppCompatActivity() {
 
         binding.buttonRefresh.setOnClickListener {
             binding.networkProblem.visibility = View.INVISIBLE
-            searchTrack()
+            viewModel.searchDebounce(binding.inputSearchForm.text.toString())
         }
         inputText()
 
         binding.clearHistoryButton.setOnClickListener {
-            historyInteractor.clear()
-            setHistoryList()
-            binding.historySearch.visibility = View.INVISIBLE
+            viewModel.clear()
         }
     }
 
@@ -129,19 +127,9 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
                 binding.buttonClearSearchForm.visibility = clearButtonVisibility(s)
-                searchInputTextUser = binding.inputSearchForm.text.toString()
-                if (binding.inputSearchForm.hasFocus() && s?.isEmpty() == true){
-                        handler.removeCallbacks(searchRunnable)
-                        binding.nothingWasFound.visibility = View.INVISIBLE
-                        binding.networkProblem.visibility = View.INVISIBLE
-                        if (historyInteractor.getTrackList().isNotEmpty()) binding.historySearch.visibility =View.VISIBLE
-                    }
-                else{
-                    binding.historySearch.visibility =View.GONE
-                    searchDebounce()
-                }
-                setHistoryList()
+                viewModel.searchDebounce(binding.inputSearchForm.text.toString())
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -149,51 +137,18 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         binding.inputSearchForm.addTextChangedListener(simpleTextWatcher)
+        viewModel.observeState().observe(this){
+            render(it)
+        }
     }
 
-    private fun searchTrack() {
-        binding.progressBar.visibility = View.VISIBLE
-        binding.recyclerView.visibility = View.GONE
-        binding.nothingWasFound.visibility = View.GONE
-        binding.networkProblem.visibility = View.GONE
-        tracksInteractor.searchTracks(binding.inputSearchForm.text.toString(), object: TrackConsumer{
-            override fun consume(tracks: List<Track>) {
-                runOnUiThread {
-                    binding.progressBar.visibility = View.GONE
-                    tracksUI.clear()
-                    if (tracks.isNotEmpty()) {
-                        binding.recyclerView.visibility = View.VISIBLE
-                        tracksUI.clear()
-                        tracksUI.addAll(tracks)
-                        tracksAdapter.notifyDataSetChanged()
-                        binding.nothingWasFound.visibility = View.INVISIBLE
-                        binding.networkProblem.visibility = View.INVISIBLE
-                    } else {
-                        showProblem(View.VISIBLE, View.INVISIBLE)
-                    }
-                }
 
-            }
-        })
-    }
-
-    private fun cleanList(){
-        tracksUI.clear()
-        tracksAdapter.notifyDataSetChanged()
-    }
-
-    private fun showProblem(nothingWasFoundVisible: Int, networkProblemVisible: Int){
-        cleanList()
-        binding.nothingWasFound.visibility = nothingWasFoundVisible
-        binding.networkProblem.visibility = networkProblemVisible
-    }
-
-    private fun setHistoryList(){
+    private fun setHistoryList(tracks: List<Track>){
         val historyTracks = ArrayList<Track>().apply {
-            addAll(historyInteractor.getTrackList())
+            addAll(tracks)
         }
         binding.historySearchList.adapter = SearchAdapter(historyTracks) {
-            historyInteractor.setTrack(it)
+            viewModel.setTrack(it)
             PlayerActivity.startActivity(this)
         }
     }
@@ -207,8 +162,56 @@ class SearchActivity : AppCompatActivity() {
         return current
     }
 
-    private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    private fun render(state: SearchState) {
+        when (state) {
+            is SearchState.Loading -> showLoading()
+            is SearchState.Content -> showContent(state.tracks)
+            is SearchState.Empty -> showEmpty(state.message)
+            is SearchState.EmptyInput -> showHistory(state.tracks)
+            is SearchState.AllEmpty -> showHistory(emptyList())
+        }
     }
+
+    private fun showLoading(){
+        binding.progressBar.visibility = View.VISIBLE
+        binding.recyclerView.visibility = View.GONE
+        binding.nothingWasFound.visibility = View.GONE
+        binding.networkProblem.visibility = View.GONE
+    }
+
+    private fun showContent(tracks: List<Track>){
+        tracksUI.clear()
+        tracksUI.addAll(tracks)
+        tracksAdapter.notifyDataSetChanged()
+        binding.progressBar.visibility = View.GONE
+        binding.historySearch.visibility = View.GONE
+        binding.recyclerView.visibility = View.VISIBLE
+        binding.nothingWasFound.visibility = View.GONE
+        binding.networkProblem.visibility = View.GONE
+    }
+
+    private fun showEmpty(message: Int){
+        binding.progressBar.visibility = View.GONE
+        binding.recyclerView.visibility = View.GONE
+        binding.historySearch.visibility = View.GONE
+        if(message == R.string.nothing_found){
+            binding.nothingWasFound.visibility = View.VISIBLE
+            binding.networkProblem.visibility = View.GONE
+        }
+        else{
+            binding.nothingWasFound.visibility = View.GONE
+            binding.networkProblem.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showHistory(tracks: List<Track>){
+        binding.progressBar.visibility = View.GONE
+        binding.recyclerView.visibility = View.GONE
+        binding.nothingWasFound.visibility = View.GONE
+        binding.networkProblem.visibility = View.GONE
+        binding.historySearch.visibility =
+            if( tracks.isNotEmpty()) { setHistoryList(tracks); View.VISIBLE;} else View.GONE
+    }
+
+
 }

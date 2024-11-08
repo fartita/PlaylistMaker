@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation.viewmodels.player
+package com.example.playlistmaker.data.states
 
 enum class PlayerState {
     PAUSED,

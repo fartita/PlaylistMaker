@@ -1,7 +1,6 @@
 package com.example.playlistmaker.domain
 
-import com.example.playlistmaker.domain.model.Track
-import com.example.playlistmaker.presentation.viewmodels.player.PlayerState
+import com.example.playlistmaker.data.states.PlayerState
 
 interface PlayerInterface {
     fun preparePlayer(trackUrl: String)

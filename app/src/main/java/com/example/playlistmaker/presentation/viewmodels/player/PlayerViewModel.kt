@@ -1,5 +1,6 @@
 package com.example.playlistmaker.presentation.viewmodels.player
 
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
@@ -9,7 +10,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.Creator
+import com.example.playlistmaker.data.states.PlayerState
 import com.example.playlistmaker.domain.PlayControlInteractor
+import com.example.playlistmaker.domain.api.HistoryInteractorImpl
+import com.example.playlistmaker.domain.model.Track
 
 class PlayerViewModel(private val interactor: PlayControlInteractor): ViewModel(){
 
@@ -49,6 +53,10 @@ class PlayerViewModel(private val interactor: PlayControlInteractor): ViewModel(
                 progressTimeRunnable
             )
         }
+    }
+
+    fun getTrack(context: Context): Track {
+        return HistoryInteractorImpl(context).getTrack()
     }
 
     fun prepare(url: String) {
