@@ -1,7 +1,8 @@
 package com.example.playlistmaker.presentation
 
+import android.annotation.SuppressLint
 import android.app.Application
-import android.content.SharedPreferences
+import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.Creator
 
@@ -10,13 +11,24 @@ import com.example.playlistmaker.domain.settings.SettingsInteractor
 
 class App : Application() {
 
-    var darkTheme = false
+    private var darkTheme = false
+
+    companion object{
+
+        @SuppressLint("StaticFieldLeak")
+        private lateinit var sInstance: Context
+
+        fun getInstance(): Context{
+            return this.sInstance
+        }
+    }
     private lateinit var settingsInteractor: SettingsInteractor
 
     override fun onCreate() {
-        settingsInteractor = Creator.getSettingInteractor(applicationContext)
-        darkTheme = settingsInteractor.getDarkTheme()
         super.onCreate()
+        sInstance = this
+        settingsInteractor = Creator.provideSettingInteractor()
+        darkTheme = settingsInteractor.getDarkTheme()
         switchTheme(darkTheme)
     }
 
@@ -31,4 +43,6 @@ class App : Application() {
         )
         settingsInteractor.setDarkTheme(darkTheme)
     }
+
+
 }

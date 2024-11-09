@@ -17,7 +17,7 @@ import com.example.playlistmaker.domain.model.Track
 
 class PlayerViewModel(private val interactor: PlayControlInteractor): ViewModel(){
 
-    private val DELAY_MILLIS = 25L
+    private val DELAY_MILLIS = 350L
 
     private val stateLiveData = MutableLiveData(PlayerState.PREPARED)
     fun observeState(): LiveData<PlayerState> = stateLiveData
@@ -55,8 +55,8 @@ class PlayerViewModel(private val interactor: PlayControlInteractor): ViewModel(
         }
     }
 
-    fun getTrack(context: Context): Track {
-        return HistoryInteractorImpl(context).getTrack()
+    fun getTrack(): Track {
+        return Creator.provideHistoryInteractor().getTrack()
     }
 
     fun prepare(url: String) {
@@ -79,5 +79,10 @@ class PlayerViewModel(private val interactor: PlayControlInteractor): ViewModel(
         super.onCleared()
         interactor.release()
         mainThreadHandler.removeCallbacks(progressTimeRunnable)
+    }
+
+    fun onPause() {
+        interactor.pausePlayer()
+        renderState(PlayerState.PAUSED)
     }
 }

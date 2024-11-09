@@ -50,7 +50,6 @@ class SearchActivity : AppCompatActivity() {
             this,
             SearchViewModel.getViewModelFactory()
         )[SearchViewModel::class.java]
-        viewModel.prepareView(applicationContext)
         
         binding.inputSearchForm.apply { 
             setOnFocusChangeListener { view, hasFocus ->

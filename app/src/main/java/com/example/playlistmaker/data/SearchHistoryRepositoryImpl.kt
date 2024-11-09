@@ -3,9 +3,11 @@ package com.example.playlistmaker.data
 import android.content.Context
 
 import com.example.playlistmaker.data.dto.TracksDto
-import com.example.playlistmaker.data.shared_pref.SharedPreferenceRepository
+import com.example.playlistmaker.domain.repository.SharedPreferenceRepository
 import com.example.playlistmaker.data.shared_pref.SharedPreferenceRepositoryImp
 import com.example.playlistmaker.domain.model.Track
+import com.example.playlistmaker.domain.repository.OneTrackRepository
+import com.example.playlistmaker.domain.repository.TrackHistoryRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type

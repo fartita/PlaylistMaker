@@ -3,6 +3,7 @@ package com.example.playlistmaker.data.shared_pref
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import com.example.playlistmaker.domain.repository.SharedPreferenceRepository
 
 class SharedPreferenceRepositoryImp(context: Context): SharedPreferenceRepository {
 

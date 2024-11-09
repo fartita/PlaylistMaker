@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data.shared_pref
+package com.example.playlistmaker.domain.repository
 
 interface SharedPreferenceRepository {
     fun remove(keyName: String)

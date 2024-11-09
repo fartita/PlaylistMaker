@@ -59,7 +59,7 @@ class PlayerActivity: AppCompatActivity() {
 
         val imageBack = findViewById<ImageView>(R.id.backButton)
         imageBack.setOnClickListener { finish() }
-        val item =  viewModel.getTrack(applicationContext)
+        val item =  viewModel.getTrack()
 
 
         name.text = item.trackName
@@ -105,7 +105,7 @@ class PlayerActivity: AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.playbackControl()
+        viewModel.onPause()
     }
 
     private fun render(state: PlayerState){

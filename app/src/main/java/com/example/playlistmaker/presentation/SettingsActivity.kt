@@ -28,7 +28,6 @@ class SettingsActivity : AppCompatActivity() {
             this,
             SettingsViewModel.getViewModelFactory()
         )[SettingsViewModel::class.java]
-        viewModel.prepare(applicationContext)
 
         binding.arrowBackSettings.setOnClickListener {
             finish()
