@@ -174,6 +174,7 @@ class SearchActivity : AppCompatActivity() {
     private fun showLoading(){
         binding.progressBar.visibility = View.VISIBLE
         binding.recyclerView.visibility = View.GONE
+        binding.historySearch.visibility = View.GONE
         binding.nothingWasFound.visibility = View.GONE
         binding.networkProblem.visibility = View.GONE
     }
