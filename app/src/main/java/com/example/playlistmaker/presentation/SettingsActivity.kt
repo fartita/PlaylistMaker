@@ -1,25 +1,33 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.constants.SharedPreference.PRACTICUM_PREFERENCES
-import com.example.playlistmaker.constants.SharedPreference.THEME_KEY
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import androidx.lifecycle.ViewModelProvider
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.states.SearchState
+import com.example.playlistmaker.data.states.SettingsState
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import com.example.playlistmaker.domain.settings.SettingsInteractor
+import com.example.playlistmaker.presentation.viewmodels.search.SearchViewModel
+import com.example.playlistmaker.presentation.viewmodels.settings.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
+    private lateinit var viewModel: SettingsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        viewModel = ViewModelProvider(
+            this,
+            SettingsViewModel.getViewModelFactory()
+        )[SettingsViewModel::class.java]
 
         binding.arrowBackSettings.setOnClickListener {
             finish()
@@ -49,14 +57,33 @@ class SettingsActivity : AppCompatActivity() {
                 startActivity(Intent.createChooser(this, null))
             }
         }
-
-        val sharedPreferences = getSharedPreferences(PRACTICUM_PREFERENCES, MODE_PRIVATE)
-        val darkTheme = sharedPreferences.getBoolean(THEME_KEY, false)
-        binding.switchToDarkTheme.setChecked(darkTheme)
+        viewModel.getDarkTheme()
 
         binding.switchToDarkTheme.setOnCheckedChangeListener { switcher, checked ->
-            (applicationContext as App).switchTheme(checked)
+            viewModel.setDarkTheme(checked)
+
         }
 
+        viewModel.observeState().observe(this){
+            render(it)
+        }
+
+    }
+
+    private fun render(state: SettingsState) {
+        when (state) {
+            is SettingsState.GetDarkTheme -> setSwitch(state.isDarkTheme)
+            is SettingsState.SetDarkTheme -> showTheme(state.isDarkTheme)
+            SettingsState.Prepare -> {}
+            }
+        }
+
+    private fun showTheme(darkTheme: Boolean) {
+        (applicationContext as App).switchTheme(darkTheme)
+    }
+
+    private fun setSwitch(darkTheme: Boolean) {
+        binding.switchToDarkTheme.setChecked(darkTheme)
+        viewModel.setInit()
     }
 }

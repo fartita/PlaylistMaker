@@ -26,6 +26,10 @@
         <item name="android:drawableTint">@color/grey</item>
     </style>
 
+    <style name ="ButtonClear">
+        <item name="tint">@color/grey</item>
+    </style>
+
     <style name = "ArrowTheme">
         <item name="android:src">@drawable/ic_arrow_back</item>
     </style>

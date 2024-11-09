@@ -69,14 +69,15 @@
 
             <ImageView
                 android:id="@+id/button_clear_search_form"
+                style="@style/ButtonClear"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_gravity="end"
                 android:layout_marginStart="@dimen/margin_16"
                 android:padding="@dimen/margin_18"
                 android:src="@drawable/ic_clear"
-                android:visibility="gone"
-                app:tint="@color/grey" />
+                android:visibility="visible"
+                />
         </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
