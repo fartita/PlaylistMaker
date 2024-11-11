@@ -10,7 +10,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.Creator
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.states.SearchState
 import com.example.playlistmaker.databinding.ActivitySearchBinding
@@ -26,7 +26,7 @@ class SearchActivity : AppCompatActivity() {
     private val CLICK_DEBOUNCE_DELAY = 1000L
 
 
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel by viewModel<SearchViewModel>()
     private val tracksUI = ArrayList<Track>()
 
     private val tracksAdapter = SearchAdapter(tracksUI) {
@@ -46,10 +46,6 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        viewModel = ViewModelProvider(
-            this,
-            SearchViewModel.getViewModelFactory()
-        )[SearchViewModel::class.java]
         
         binding.inputSearchForm.apply { 
             setOnFocusChangeListener { view, hasFocus ->

@@ -1,7 +1,6 @@
 package com.example.playlistmaker.domain.settings
 
 import android.content.Context
-import com.example.playlistmaker.Creator
 import com.example.playlistmaker.domain.repository.SharedPreferenceRepository
 import com.example.playlistmaker.data.shared_pref.SharedPreferenceRepositoryImp
 

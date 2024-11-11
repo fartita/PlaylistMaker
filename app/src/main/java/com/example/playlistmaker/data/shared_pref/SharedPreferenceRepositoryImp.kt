@@ -5,14 +5,8 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import com.example.playlistmaker.domain.repository.SharedPreferenceRepository
 
-class SharedPreferenceRepositoryImp(context: Context): SharedPreferenceRepository {
+class SharedPreferenceRepositoryImp(private val sharedPreferences: SharedPreferences): SharedPreferenceRepository {
 
-    private val PRACTICUM_PREFERENCES = "playlist_maker_preferences"
-
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
-        PRACTICUM_PREFERENCES,
-        MODE_PRIVATE
-    )
 
     override fun remove(keyName: String) {
         sharedPreferences.edit()

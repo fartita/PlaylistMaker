@@ -13,14 +13,13 @@ import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
 
-class SearchHistoryRepositoryImpl(context: Context): OneTrackRepository, TrackHistoryRepository {
+class SearchHistoryRepositoryImpl(private val sharedPreferenceRepository: SharedPreferenceRepository, private val gson: Gson ): OneTrackRepository, TrackHistoryRepository {
 
     companion object{
         const val MAXIMUM_SIZE = 10
     }
 
     private val TRACKS_KEY = "track_key"
-    private val sharedPreferenceRepository: SharedPreferenceRepository = SharedPreferenceRepositoryImp(context)
 
     override fun getTrackList(): List<Track> {
         return read().map {
@@ -63,11 +62,11 @@ class SearchHistoryRepositoryImpl(context: Context): OneTrackRepository, TrackHi
     private fun read(): MutableList<TracksDto> {
         val json = sharedPreferenceRepository.getString(TRACKS_KEY) ?: return mutableListOf()
         val listOfMyClassObject: Type = object : TypeToken<ArrayList<TracksDto>?>() {}.type
-        return Gson().fromJson(json, listOfMyClassObject)
+        return gson.fromJson(json, listOfMyClassObject)
     }
 
     private fun write(tracks: MutableList<TracksDto>) {
-        val json = Gson().toJson(tracks)
+        val json = gson.toJson(tracks)
         sharedPreferenceRepository.putString(TRACKS_KEY, json)
     }
 
