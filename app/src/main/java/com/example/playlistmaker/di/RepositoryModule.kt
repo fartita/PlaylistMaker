@@ -30,7 +30,7 @@ val repositoryModule = module {
         SharedPreferenceRepositoryImp(get())
     }
 
-    single<PlayerInterface>{
+    factory<PlayerInterface>{
         PlayerRepositoryImpl(get())
     }
 
