@@ -29,4 +29,11 @@
     <string name="year">Year</string>
     <string name="style">Style</string>
     <string name="country">Country</string>
+
+    <string name="new_list">New playlist</string>
+    <string name="playlist_message">You didn\'t create playlist</string>
+    <string name="tracks_message">Your mediatek is empty</string>
+
+    <string name="favourites">Favourites tracks</string>
+    <string name="playlists">Playlists</string>
 </resources>
