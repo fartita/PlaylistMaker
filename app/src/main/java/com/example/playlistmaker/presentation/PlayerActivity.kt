@@ -10,10 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.states.PlayerState
 import com.example.playlistmaker.presentation.viewmodels.player.PlayerViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,13 +30,11 @@ class PlayerActivity: AppCompatActivity() {
     private lateinit var playButton: ImageButton
     private lateinit var progressTimeView: TextView
 
-    private lateinit var viewModel: PlayerViewModel
+    private val viewModel by viewModel<PlayerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
-
-        viewModel = ViewModelProvider(this, PlayerViewModel.getViewModelFactory())[PlayerViewModel::class.java]
 
         playButton = findViewById(R.id.playButton)
         progressTimeView = findViewById(R.id.progressTime)

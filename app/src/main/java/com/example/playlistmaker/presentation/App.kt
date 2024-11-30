@@ -4,7 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.Creator
+import com.example.playlistmaker.di.dataModule
+import com.example.playlistmaker.di.interactorModule
+import com.example.playlistmaker.di.repositoryModule
+import com.example.playlistmaker.di.viewModelModule
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 import com.example.playlistmaker.domain.settings.SettingsInteractor
 
@@ -22,12 +28,18 @@ class App : Application() {
             return this.sInstance
         }
     }
-    private lateinit var settingsInteractor: SettingsInteractor
+
+
+    private val settingsInteractor: SettingsInteractor by inject()
 
     override fun onCreate() {
         super.onCreate()
         sInstance = this
-        settingsInteractor = Creator.provideSettingInteractor()
+        startKoin {
+            androidContext(this@App)
+            modules(dataModule, interactorModule, repositoryModule, viewModelModule)
+        }
+
         darkTheme = settingsInteractor.getDarkTheme()
         switchTheme(darkTheme)
     }

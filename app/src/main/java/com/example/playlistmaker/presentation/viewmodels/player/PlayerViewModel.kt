@@ -9,13 +9,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.Creator
 import com.example.playlistmaker.data.states.PlayerState
 import com.example.playlistmaker.domain.PlayControlInteractor
+import com.example.playlistmaker.domain.api.HistoryInteractor
 import com.example.playlistmaker.domain.api.HistoryInteractorImpl
 import com.example.playlistmaker.domain.model.Track
 
-class PlayerViewModel(private val interactor: PlayControlInteractor): ViewModel(){
+class PlayerViewModel(private val interactor: PlayControlInteractor, private val historyInteractor: HistoryInteractor): ViewModel(){
 
     private val DELAY_MILLIS = 350L
 
@@ -35,14 +35,6 @@ class PlayerViewModel(private val interactor: PlayControlInteractor): ViewModel(
         }
     }
 
-    companion object{
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val interactor = Creator.createPlayControl()
-                PlayerViewModel(interactor)
-            }
-        }
-    }
 
     init {
         interactor.setStateOnChangeListener { state->
@@ -56,7 +48,7 @@ class PlayerViewModel(private val interactor: PlayControlInteractor): ViewModel(
     }
 
     fun getTrack(): Track {
-        return Creator.provideHistoryInteractor().getTrack()
+        return historyInteractor.getTrack()
     }
 
     fun prepare(url: String) {

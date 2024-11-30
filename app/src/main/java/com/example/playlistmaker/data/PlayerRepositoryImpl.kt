@@ -4,9 +4,8 @@ import android.media.MediaPlayer
 import com.example.playlistmaker.domain.PlayerInterface
 import com.example.playlistmaker.data.states.PlayerState
 
-class PlayerRepositoryImpl  : PlayerInterface {
+class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer)  : PlayerInterface {
 
-    private var mediaPlayer = MediaPlayer()
     private var stateCallback: ((PlayerState) -> Unit)? = null
 
     override fun preparePlayer (trackUrl: String) {
