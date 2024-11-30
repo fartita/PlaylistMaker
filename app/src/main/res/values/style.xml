@@ -92,15 +92,16 @@
     </style>
 
     <style name="TabLayoutStyle">
+        <item name="android:background">?attr/colorOnSecondary</item>
+        <item name="android:layout_margin">@dimen/margin_16</item>
         <item name="tabTextColor">?attr/colorOnPrimary</item>
         <item name="tabIndicatorColor">?attr/colorOnPrimary</item>
-        <item name="android:fontFamily">@font/ys_display_medium</item>
-        <item name="android:background">?attr/colorOnSecondary</item>
         <item name="android:textFontWeight">500</item>
-        <item name="tabTextAppearance">@android:style/TextAppearance.Widget.TabWidget</item>
-        <item name="android:textSize">@dimen/textSize_14</item>
-        <item name="android:layout_margin">@dimen/margin_16</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/textSize_16</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
+
 
 
 
