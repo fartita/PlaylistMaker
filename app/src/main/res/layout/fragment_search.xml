@@ -12,16 +12,8 @@
         android:id="@+id/toolbar_settings"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_marginLeft="@dimen/margin_16"
         style = "@style/SecondBackground"
         android:orientation="horizontal">
-
-        <ImageView
-            style = "@style/ArrowTheme"
-            android:id="@+id/arrow_back_search"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:scaleType="centerInside" />
 
 
         <TextView

@@ -7,72 +7,26 @@
     android:layout_height="match_parent"
     tools:context=".presentation.MainActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent" >
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/container_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="@style/NavigationButtonStyle"
 
-        <RelativeLayout
-            android:id="@+id/panel_header"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="8"
-            style = "@style/MainBackground"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu"/>
 
-            <TextView
-                android:id="@+id/title_main"
-                style = "@style/TitleApp"
-                android:text="@string/app_name"
-                android:textColor="@color/white"
-                tools:ignore="RtlHardcoded" />
-        </RelativeLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_weight="0.8"
-            style = "@style/MainBackground"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/margin_16"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <Button
-                    android:id="@+id/search"
-                    style="@style/ButtonMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/search"
-                    app:icon="@drawable/ic_search" />
-
-                <Button
-                    android:id="@+id/mediatek"
-                    style="@style/ButtonMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/mediatek"
-                    android:textColor="@color/black"
-                    app:icon="@drawable/ic_library" />
-
-                <Button
-                    android:id="@+id/settings"
-                    style="@style/ButtonMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/settings"
-                    app:icon="@drawable/ic_settings" />
-
-            </LinearLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
