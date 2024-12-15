@@ -63,7 +63,7 @@ class SettingsFragment : Fragment() {
 
         }
 
-        viewModel.observeState().observe(requireActivity()){
+        viewModel.observeState().observe(viewLifecycleOwner){
             render(it)
         }
 
