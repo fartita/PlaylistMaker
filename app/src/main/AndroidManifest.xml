@@ -26,15 +26,15 @@
         </activity>
 
         <activity
-            android:name=".presentation.SettingsActivity">
+            android:name=".presentation.fragments.SettingsFragment">
         </activity>
 
         <activity
-            android:name=".presentation.MediatekActivity">
+            android:name=".presentation.fragments.MediatekFragment">
         </activity>
 
         <activity
-            android:name=".presentation.SearchActivity">
+            android:name=".presentation.fragments.SearchFragment">
         </activity>
 
         <activity
