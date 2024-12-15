@@ -14,17 +14,19 @@ class TracksFragment : Fragment() {
     companion object {
         fun newInstance() = TracksFragment()
     }
-    private var binding: TracksFragmentBinding? = null
+    private var _binding: TracksFragmentBinding? = null
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = TracksFragmentBinding.inflate(inflater, container, false)
-        return binding!!.root
+        _binding = TracksFragmentBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
     }
 
     override fun onDestroyView() {
-        binding = null
         super.onDestroyView()
+        _binding = null
     }
 }

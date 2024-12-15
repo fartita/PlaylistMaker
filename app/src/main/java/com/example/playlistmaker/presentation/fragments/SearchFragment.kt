@@ -38,7 +38,8 @@ class SearchFragment : Fragment() {
             PlayerActivity.startActivity(requireContext())
         }
     }
-    private var binding: FragmentSearchBinding? = null
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
 
     private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
@@ -49,53 +50,52 @@ class SearchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
-        return binding!!.root
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        if(binding != null){
-            binding!!.inputSearchForm.apply {
-                setOnFocusChangeListener { view, hasFocus ->
-                    viewModel.searchDebounce(binding!!.inputSearchForm.text.toString())
-                }
+        binding.inputSearchForm.apply {
+            setOnFocusChangeListener { view, hasFocus ->
+                viewModel.searchDebounce(binding.inputSearchForm.text.toString())
+            }
 
-                setOnEditorActionListener { _, actionId, _ ->
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        if(binding!!.inputSearchForm.text.isNotEmpty()){
-                            viewModel.searchDebounce(binding!!.inputSearchForm.text.toString())
-                        }
-                        true
+            setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if(binding.inputSearchForm.text.isNotEmpty()){
+                        viewModel.searchDebounce(binding.inputSearchForm.text.toString())
                     }
-                    false
+                    true
                 }
-            }
-
-            binding!!.buttonClearSearchForm.visibility = clearButtonVisibility(binding!!.inputSearchForm.text)
-            binding!!.buttonClearSearchForm.setOnClickListener {
-                clearSearchForm()
-                viewModel.searchDebounce("")
-            }
-
-
-            binding!!.recyclerView.adapter = tracksAdapter
-
-            binding!!.buttonRefresh.setOnClickListener {
-                binding!!.networkProblem.visibility = View.INVISIBLE
-                viewModel.searchDebounce(binding!!.inputSearchForm.text.toString())
-            }
-            inputText()
-
-            binding!!.clearHistoryButton.setOnClickListener {
-                viewModel.clear()
+                false
             }
         }
-        
+
+        binding.buttonClearSearchForm.visibility = clearButtonVisibility(binding.inputSearchForm.text)
+        binding.buttonClearSearchForm.setOnClickListener {
+            clearSearchForm()
+            viewModel.searchDebounce("")
+        }
+
+
+        binding.recyclerView.adapter = tracksAdapter
+
+        binding.buttonRefresh.setOnClickListener {
+            binding.networkProblem.visibility = View.INVISIBLE
+            viewModel.searchDebounce(binding.inputSearchForm.text.toString())
+        }
+        inputText()
+
+        binding.clearHistoryButton.setOnClickListener {
+            viewModel.clear()
+        }
+
 
     }
 
     private fun clearSearchForm() {
-        binding!!.inputSearchForm.text.clear()
+        binding.inputSearchForm.text.clear()
         val imm = requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
@@ -117,7 +117,7 @@ class SearchFragment : Fragment() {
         super.onViewStateRestored(savedInstanceState)
         if (savedInstanceState != null) {
             searchInputTextUser = savedInstanceState.getString(SEARCH_QUERY, "")
-            binding!!.inputSearchForm.setText(searchInputTextUser)
+            binding.inputSearchForm.setText(searchInputTextUser)
         }
 
     }
@@ -130,15 +130,15 @@ class SearchFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
-                binding!!.buttonClearSearchForm.visibility = clearButtonVisibility(s)
-                viewModel.searchDebounce(binding!!.inputSearchForm.text.toString())
+                binding.buttonClearSearchForm.visibility = clearButtonVisibility(s)
+                viewModel.searchDebounce(binding.inputSearchForm.text.toString())
             }
 
             override fun afterTextChanged(s: Editable?) {
                 // empty
             }
         }
-        binding!!.inputSearchForm.addTextChangedListener(simpleTextWatcher)
+        binding.inputSearchForm.addTextChangedListener(simpleTextWatcher)
         viewModel.observeState().observe(viewLifecycleOwner){
             render(it)
         }
@@ -149,7 +149,7 @@ class SearchFragment : Fragment() {
         val historyTracks = ArrayList<Track>().apply {
             addAll(tracks)
         }
-        binding!!.historySearchList.adapter = SearchAdapter(historyTracks) {
+        binding.historySearchList.adapter = SearchAdapter(historyTracks) {
             viewModel.setTrack(it)
             PlayerActivity.startActivity(requireActivity())
         }
@@ -175,50 +175,50 @@ class SearchFragment : Fragment() {
     }
 
     private fun showLoading(){
-        binding!!.progressBar.visibility = View.VISIBLE
-        binding!!.recyclerView.visibility = View.GONE
-        binding!!.historySearch.visibility = View.GONE
-        binding!!.nothingWasFound.visibility = View.GONE
-        binding!!.networkProblem.visibility = View.GONE
+        binding.progressBar.visibility = View.VISIBLE
+        binding.recyclerView.visibility = View.GONE
+        binding.historySearch.visibility = View.GONE
+        binding.nothingWasFound.visibility = View.GONE
+        binding.networkProblem.visibility = View.GONE
     }
 
     private fun showContent(tracks: List<Track>){
         tracksUI.clear()
         tracksUI.addAll(tracks)
         tracksAdapter.notifyDataSetChanged()
-        binding!!.progressBar.visibility = View.GONE
-        binding!!.historySearch.visibility = View.GONE
-        binding!!.recyclerView.visibility = View.VISIBLE
-        binding!!.nothingWasFound.visibility = View.GONE
-        binding!!.networkProblem.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
+        binding.historySearch.visibility = View.GONE
+        binding.recyclerView.visibility = View.VISIBLE
+        binding.nothingWasFound.visibility = View.GONE
+        binding.networkProblem.visibility = View.GONE
     }
 
     private fun showEmpty(message: Int){
-        binding!!.progressBar.visibility = View.GONE
-        binding!!.recyclerView.visibility = View.GONE
-        binding!!.historySearch.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
+        binding.recyclerView.visibility = View.GONE
+        binding.historySearch.visibility = View.GONE
         if(message == R.string.nothing_found){
-            binding!!.nothingWasFound.visibility = View.VISIBLE
-            binding!!.networkProblem.visibility = View.GONE
+            binding.nothingWasFound.visibility = View.VISIBLE
+            binding.networkProblem.visibility = View.GONE
         }
         else{
-            binding!!.nothingWasFound.visibility = View.GONE
-            binding!!.networkProblem.visibility = View.VISIBLE
+            binding.nothingWasFound.visibility = View.GONE
+            binding.networkProblem.visibility = View.VISIBLE
         }
     }
 
     private fun showHistory(tracks: List<Track>){
-        binding!!.progressBar.visibility = View.GONE
-        binding!!.recyclerView.visibility = View.GONE
-        binding!!.nothingWasFound.visibility = View.GONE
-        binding!!.networkProblem.visibility = View.GONE
-        binding!!.historySearch.visibility =
+        binding.progressBar.visibility = View.GONE
+        binding.recyclerView.visibility = View.GONE
+        binding.nothingWasFound.visibility = View.GONE
+        binding.networkProblem.visibility = View.GONE
+        binding.historySearch.visibility =
             if( tracks.isNotEmpty()) { setHistoryList(tracks); View.VISIBLE;} else View.GONE
     }
 
     override fun onDestroyView() {
-        binding = null
         super.onDestroyView()
+        _binding = null
     }
 
 

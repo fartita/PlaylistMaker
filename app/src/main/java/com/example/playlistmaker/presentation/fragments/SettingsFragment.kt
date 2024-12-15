@@ -16,7 +16,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : Fragment() {
 
-    private var binding: FragmentSettingsBinding? = null
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<SettingsViewModel>()
 
     override fun onCreateView(
@@ -24,47 +25,46 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        return binding!!.root
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        if(binding != null){
-            binding!!.imageShare.setOnClickListener{
-                Intent(Intent.ACTION_SEND).apply {
-                    putExtra(Intent.EXTRA_TEXT, getString(R.string.share_link))
-                    type = "text/plain"
-                    startActivity(Intent.createChooser(this, null))
-                }
+        binding.imageShare.setOnClickListener{
+            Intent(Intent.ACTION_SEND).apply {
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.share_link))
+                type = "text/plain"
+                startActivity(Intent.createChooser(this, null))
             }
+        }
 
-            binding!!.imageTerm.setOnClickListener {
-                Intent(Intent.ACTION_VIEW).apply {
-                    data = Uri.parse(getString(R.string.support_user_agreement))
-                    startActivity(Intent.createChooser(this, null))
-                }
+        binding.imageTerm.setOnClickListener {
+            Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse(getString(R.string.support_user_agreement))
+                startActivity(Intent.createChooser(this, null))
             }
+        }
 
-            binding!!.imageSupport.setOnClickListener {
-                Intent(Intent.ACTION_SENDTO).apply {
-                    data = Uri.parse("mailto:")
-                    putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_address)))
-                    putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_theme))
-                    putExtra(Intent.EXTRA_TEXT, getString(R.string.email_message))
-                    startActivity(Intent.createChooser(this, null))
-                }
+        binding.imageSupport.setOnClickListener {
+            Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:")
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_address)))
+                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_theme))
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.email_message))
+                startActivity(Intent.createChooser(this, null))
             }
-            viewModel.getDarkTheme()
+        }
+        viewModel.getDarkTheme()
 
-            binding!!.switchToDarkTheme.setOnCheckedChangeListener { switcher, checked ->
-                viewModel.setDarkTheme(checked)
+        binding.switchToDarkTheme.setOnCheckedChangeListener { switcher, checked ->
+            viewModel.setDarkTheme(checked)
 
-            }
+        }
 
-            viewModel.observeState().observe(requireActivity()){
-                render(it)
-            }
+        viewModel.observeState().observe(requireActivity()){
+            render(it)
         }
 
 
@@ -83,12 +83,12 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setSwitch(darkTheme: Boolean) {
-        binding!!.switchToDarkTheme.setChecked(darkTheme)
+        binding.switchToDarkTheme.setChecked(darkTheme)
         viewModel.setInit()
     }
 
     override fun onDestroyView() {
-        binding = null
         super.onDestroyView()
+        _binding = null
     }
 }

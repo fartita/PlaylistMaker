@@ -25,17 +25,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".presentation.fragments.SettingsFragment">
-        </activity>
-
-        <activity
-            android:name=".presentation.fragments.MediatekFragment">
-        </activity>
-
-        <activity
-            android:name=".presentation.fragments.SearchFragment">
-        </activity>
 
         <activity
             android:name=".presentation.PlayerActivity"
