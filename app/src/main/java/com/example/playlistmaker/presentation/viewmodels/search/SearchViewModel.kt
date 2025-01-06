@@ -23,7 +23,6 @@ class SearchViewModel(private val searchInteractor: TracksInteractor, private va
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
-        private val SEARCH_REQUEST_TOKEN = Any()
 
     }
     private val stateLiveData = MutableLiveData<SearchState>()
@@ -31,7 +30,6 @@ class SearchViewModel(private val searchInteractor: TracksInteractor, private va
 
     private var latestSearchText: String? = null
     private var searchJob: Job? = null
-    private val handler = Handler(Looper.getMainLooper())
 
     fun searchDebounce(changedText: String) {
         if(changedText.isEmpty()){
@@ -42,7 +40,6 @@ class SearchViewModel(private val searchInteractor: TracksInteractor, private va
                 return
             }
             this.latestSearchText = changedText
-            handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
 
 
             searchJob?.cancel()
@@ -52,10 +49,6 @@ class SearchViewModel(private val searchInteractor: TracksInteractor, private va
             }
         }
 
-    }
-
-    override fun onCleared() {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 
     private val tracksList = ArrayList<Track>()
