@@ -13,15 +13,21 @@ class PlayListFragment : Fragment() {
     private val viewModel by viewModel<PlayListViewModel>()
 
     companion object {
-        fun newInstance() = PlayListFragment().apply {
-        }
+        fun newInstance() = PlayListFragment()
     }
-    private lateinit var binding: PlaylistFragmentBinding
+    private var _binding: PlaylistFragmentBinding? = null
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = PlaylistFragmentBinding.inflate(inflater, container, false)
-        return binding.root
+        _binding = PlaylistFragmentBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

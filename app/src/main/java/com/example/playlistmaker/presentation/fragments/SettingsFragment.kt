@@ -1,33 +1,36 @@
-package com.example.playlistmaker.presentation
+package com.example.playlistmaker.presentation.fragments
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.states.SearchState
 import com.example.playlistmaker.data.states.SettingsState
-import com.example.playlistmaker.databinding.ActivitySettingsBinding
-import com.example.playlistmaker.domain.settings.SettingsInteractor
-import com.example.playlistmaker.presentation.viewmodels.search.SearchViewModel
+import com.example.playlistmaker.databinding.FragmentSettingsBinding
+import com.example.playlistmaker.presentation.App
 import com.example.playlistmaker.presentation.viewmodels.settings.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment : Fragment() {
 
-    private lateinit var binding: ActivitySettingsBinding
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<SettingsViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val view = binding.root
-        setContentView(view)
+        return view
+    }
 
-        binding.arrowBackSettings.setOnClickListener {
-            finish()
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         binding.imageShare.setOnClickListener{
             Intent(Intent.ACTION_SEND).apply {
@@ -48,7 +51,7 @@ class SettingsActivity : AppCompatActivity() {
             Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_address)))
-                intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_theme))
+                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_theme))
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.email_message))
                 startActivity(Intent.createChooser(this, null))
             }
@@ -60,9 +63,10 @@ class SettingsActivity : AppCompatActivity() {
 
         }
 
-        viewModel.observeState().observe(this){
+        viewModel.observeState().observe(viewLifecycleOwner){
             render(it)
         }
+
 
     }
 
@@ -75,11 +79,16 @@ class SettingsActivity : AppCompatActivity() {
         }
 
     private fun showTheme(darkTheme: Boolean) {
-        (applicationContext as App).switchTheme(darkTheme)
+        (requireActivity().applicationContext as App).switchTheme(darkTheme)
     }
 
     private fun setSwitch(darkTheme: Boolean) {
         binding.switchToDarkTheme.setChecked(darkTheme)
         viewModel.setInit()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

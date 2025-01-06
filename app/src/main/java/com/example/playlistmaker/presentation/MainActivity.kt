@@ -5,32 +5,24 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
+import com.example.playlistmaker.presentation.fragments.SearchFragment
+import com.example.playlistmaker.presentation.fragments.SettingsFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val search = findViewById<Button>(R.id.search)
-        val mediatek = findViewById<Button>(R.id.mediatek)
-        val settings = findViewById<Button>(R.id.settings)
+        
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.container_view) as NavHostFragment
+        val navController = navHostFragment.navController
 
-        search.setOnClickListener(this@MainActivity)
-        mediatek.setOnClickListener(this@MainActivity)
-        settings.setOnClickListener(this@MainActivity)
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.setupWithNavController(navController)
     }
 
-    override fun onClick(buttonView: View?) {
-        when (buttonView?.id) {
-            R.id.search -> {
-                startActivity(Intent(this, SearchActivity::class.java))
-            }
-            R.id.mediatek -> {
-                startActivity(Intent(this, MediatekActivity::class.java))
-            }
-            R.id.settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
-            }
-        }
-    }
 }
