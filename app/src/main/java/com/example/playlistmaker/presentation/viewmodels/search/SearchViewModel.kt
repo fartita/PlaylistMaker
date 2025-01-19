@@ -12,21 +12,24 @@ import com.example.playlistmaker.domain.model.Track
 import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.states.SearchState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(private val searchInteractor: TracksInteractor, private val historyInteractor: HistoryInteractor): ViewModel() {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
-        private val SEARCH_REQUEST_TOKEN = Any()
 
     }
     private val stateLiveData = MutableLiveData<SearchState>()
     fun observeState(): LiveData<SearchState> = stateLiveData
 
     private var latestSearchText: String? = null
-    private val handler = Handler(Looper.getMainLooper())
+    private var searchJob: Job? = null
 
     fun searchDebounce(changedText: String) {
         if(changedText.isEmpty()){
@@ -37,22 +40,15 @@ class SearchViewModel(private val searchInteractor: TracksInteractor, private va
                 return
             }
             this.latestSearchText = changedText
-            handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
 
-            val searchRunnable = Runnable { search(changedText) }
 
-            val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY_MILLIS
-            handler.postAtTime(
-                searchRunnable,
-                SEARCH_REQUEST_TOKEN,
-                postTime,
-            )
+            searchJob?.cancel()
+            searchJob = viewModelScope.launch {
+                delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
+                search(changedText)
+            }
         }
 
-    }
-
-    override fun onCleared() {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 
     private val tracksList = ArrayList<Track>()
@@ -85,28 +81,25 @@ class SearchViewModel(private val searchInteractor: TracksInteractor, private va
             renderState(
                     SearchState.Loading
                 )
-                searchInteractor.searchTracks(
-                    newSearchText, object: TracksInteractor.TrackConsumer{
-                        override fun consume(tracks: List<Track>?) {
-                            handler.post {
-                                if(tracks != null){
-                                    tracksList.clear()
-                                    tracksList.addAll(tracks)
-                                }
-                                if(tracks == null){
-                                    renderState(SearchState.Empty(R.string.network_problem))
-                                }
-                                else if(tracks.isEmpty()){
-                                    renderState(SearchState.Empty(R.string.nothing_found))
-                                }
-                                else{
-                                    renderState(SearchState.Content(tracksList))
-                                }
+            viewModelScope.launch {
+                searchInteractor
+                    .searchTracks(newSearchText)
+                    .collect{ tracks ->
+                        run {
+                            if (tracks != null) {
+                                tracksList.clear()
+                                tracksList.addAll(tracks)
                             }
-
+                            if (tracks == null) {
+                                renderState(SearchState.Empty(R.string.network_problem))
+                            } else if (tracks.isEmpty()) {
+                                renderState(SearchState.Empty(R.string.nothing_found))
+                            } else {
+                                renderState(SearchState.Content(tracksList))
+                            }
                         }
-                    }
-                )
+                }
+            }
         }
 
         private fun renderState(state: SearchState) {

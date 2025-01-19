@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.states.SearchState
@@ -20,6 +21,8 @@ import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.presentation.PlayerActivity
 import com.example.playlistmaker.presentation.recycler.SearchAdapter
 import com.example.playlistmaker.presentation.viewmodels.search.SearchViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
 
@@ -41,7 +44,6 @@ class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
-    private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
 
 
@@ -159,7 +161,10 @@ class SearchFragment : Fragment() {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
         }
         return current
     }
