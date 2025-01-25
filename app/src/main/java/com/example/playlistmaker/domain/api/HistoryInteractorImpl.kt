@@ -1,15 +1,14 @@
 package com.example.playlistmaker.domain.api
 
-import android.content.Context
 import com.example.playlistmaker.domain.repository.OneTrackRepository
-import com.example.playlistmaker.data.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.domain.repository.TrackHistoryRepository
 import com.example.playlistmaker.domain.model.Track
+import kotlinx.coroutines.flow.Flow
 
 class HistoryInteractorImpl(private val oneTrackRepository: OneTrackRepository, private val historyTrackRepository: TrackHistoryRepository): HistoryInteractor {
 
 
-    override fun getTrackList(): List<Track> {
+    override fun getTrackList(): Flow<List<Track>> {
         return historyTrackRepository.getTrackList()
     }
 

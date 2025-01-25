@@ -8,13 +8,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.data.states.PlayerState
 import com.example.playlistmaker.domain.PlayControlInteractor
 import com.example.playlistmaker.domain.api.HistoryInteractor
+import com.example.playlistmaker.domain.db.FavouriteTracksInteractor
 import com.example.playlistmaker.domain.model.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PlayerViewModel(private val interactor: PlayControlInteractor, private val historyInteractor: HistoryInteractor): ViewModel(){
+class PlayerViewModel(private val interactor: PlayControlInteractor, private val historyInteractor: HistoryInteractor, private val favoriteInteractor: FavouriteTracksInteractor): ViewModel(){
 
     private val DELAY_MILLIS = 300L
 
@@ -23,6 +24,9 @@ class PlayerViewModel(private val interactor: PlayControlInteractor, private val
 
     private val stateProgressTimeLiveData = MutableLiveData<String>()
     fun observeTime(): LiveData<String> = stateProgressTimeLiveData
+
+    private val stateFavouriteData = MutableLiveData<Boolean>()
+    fun observeFavouriteState(): LiveData<Boolean> = stateFavouriteData
 
     private var timerJob: Job? = null
 
@@ -55,8 +59,9 @@ class PlayerViewModel(private val interactor: PlayControlInteractor, private val
         return historyInteractor.getTrack()
     }
 
-    fun prepare(url: String) {
-        interactor.preparePlayer(url)
+    fun prepare(track: Track) {
+        interactor.preparePlayer(track.previewUrl)
+        renderFavouriteState(track)
     }
 
     fun playbackControl() {
@@ -77,5 +82,14 @@ class PlayerViewModel(private val interactor: PlayControlInteractor, private val
     fun onPause() {
         interactor.pausePlayer()
         renderState(PlayerState.PAUSED)
+    }
+
+    fun onFavouriteClicked(track: Track) {
+        viewModelScope.launch {
+            renderFavouriteState(favoriteInteractor.updateFavorite(track))
+        }
+    }
+    private fun renderFavouriteState(track: Track) {
+        stateFavouriteData.postValue(track.isFavourite)
     }
 }
