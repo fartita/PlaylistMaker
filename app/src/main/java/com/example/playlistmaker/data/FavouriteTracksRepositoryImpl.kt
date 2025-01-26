@@ -1,6 +1,6 @@
 package com.example.playlistmaker.data
 
-import com.example.playlistmaker.data.db.AppDatabase
+import com.example.playlistmaker.data.db.TrackDao
 import com.example.playlistmaker.data.db.TrackDbConvertor
 import com.example.playlistmaker.data.db.model.TrackDb
 import com.example.playlistmaker.domain.model.Track
@@ -8,26 +8,26 @@ import com.example.playlistmaker.domain.repository.FavouriteTracksRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class FavouriteTracksRepositoryImpl(private val appDatabase: AppDatabase,
+class FavouriteTracksRepositoryImpl(private val trackDao: TrackDao,
                                     private val trackDbConvertor: TrackDbConvertor,) :
     FavouriteTracksRepository {
     override fun getFavoriteTracks(): Flow<List<Track>> = flow {
-        val tracks = appDatabase.trackDao().getFavoriteTracks()
+        val tracks = trackDao.getFavoriteTracks()
         emit(convertFromTrackEntity(tracks))
     }
 
     override suspend fun addFavoriteTrack(track: Track) {
         val trackDb = convertToTrackEntity(track)
-        appDatabase.trackDao().insertTrack(trackDb)
+        trackDao.insertTrack(trackDb)
     }
 
     override suspend fun deleteFavoriteTrack(track: Track) {
-        val trackDb = appDatabase.trackDao().getFavouriteTrack(track.trackId)
-        appDatabase.trackDao().delete(trackDb)
+        val trackDb = trackDao.getFavouriteTrack(track.trackId)
+        trackDao.delete(trackDb)
     }
 
     override fun getFavoriteChecked(id: Long): Flow<List<Long>> = flow{
-        val tracksId = appDatabase.trackDao().getTrackId()
+        val tracksId = trackDao.getTrackId()
         emit(tracksId)
     }
 

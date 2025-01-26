@@ -8,6 +8,7 @@
         <item name="colorOnSecondary">@color/yp_black</item>
         <item name="colorAccent">@color/switch_color</item>
         <item name="colorSurface">@color/switch_track_color</item>
+        <item name="colorPrimaryFixed">@color/white</item>
 
     </style>
 

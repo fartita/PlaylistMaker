@@ -2,6 +2,7 @@ package com.example.playlistmaker.data
 
 import android.content.Context
 import com.example.playlistmaker.data.db.AppDatabase
+import com.example.playlistmaker.data.db.TrackDao
 
 import com.example.playlistmaker.data.dto.TracksDto
 import com.example.playlistmaker.domain.repository.SharedPreferenceRepository
@@ -16,7 +17,7 @@ import kotlinx.coroutines.flow.flow
 import java.lang.reflect.Type
 
 
-class SearchHistoryRepositoryImpl(private val appDatabase: AppDatabase, private val sharedPreferenceRepository: SharedPreferenceRepository, private val gson: Gson ): OneTrackRepository, TrackHistoryRepository {
+class SearchHistoryRepositoryImpl(private val trackDao: TrackDao, private val sharedPreferenceRepository: SharedPreferenceRepository, private val gson: Gson ): OneTrackRepository, TrackHistoryRepository {
 
     companion object{
         const val MAXIMUM_SIZE = 10
@@ -27,7 +28,7 @@ class SearchHistoryRepositoryImpl(private val appDatabase: AppDatabase, private 
     override fun getTrackList(): Flow<List<Track>> = flow {
         emit(
             read().map{
-                val favouriteTrack = appDatabase.trackDao().getTrackId()
+                val favouriteTrack = trackDao.getTrackId()
                 Track(
                     it.trackId,
                     it.trackName,
@@ -46,8 +47,8 @@ class SearchHistoryRepositoryImpl(private val appDatabase: AppDatabase, private 
     }
 
     override fun setTrack(track: Track) {
-        val tracks = read()
-
+        val tracks = read().toMutableList()
+        tracks.find { it.trackId == track.trackId }?.isFavourite = track.isFavourite
         if (!tracks.remove(track) && tracks.size >= MAXIMUM_SIZE) tracks.removeAt(MAXIMUM_SIZE - 1)
         tracks.add(0, track)
         write(tracks)
@@ -57,8 +58,8 @@ class SearchHistoryRepositoryImpl(private val appDatabase: AppDatabase, private 
         sharedPreferenceRepository.remove(TRACKS_KEY)
     }
 
-    private fun read(): MutableList<Track> {
-        val json = sharedPreferenceRepository.getString(TRACKS_KEY) ?: return mutableListOf()
+    private fun read(): List<Track> {
+        val json = sharedPreferenceRepository.getString(TRACKS_KEY) ?: return listOf()
         val listOfMyClassObject: Type = object : TypeToken<ArrayList<Track>?>() {}.type
         return gson.fromJson(json, listOfMyClassObject)
     }

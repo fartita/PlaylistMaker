@@ -40,7 +40,11 @@ val dataModule = module{
     }
 
     single {
-        AppDatabase.getInstance(androidContext())
+        Room.databaseBuilder(
+            androidContext(),
+            AppDatabase::class.java,
+            "database.db"
+        ).build()
     }
 
 
