@@ -11,7 +11,8 @@ import com.example.playlistmaker.domain.model.Track
 import kotlinx.coroutines.launch
 
 class TracksViewModel(private val interactor: FavouriteTracksInteractor, private val historyInteractor: HistoryInteractor) : ViewModel() {
-    init {
+
+    fun fill() {
         viewModelScope.launch {
             interactor.showTracks()
                 .collect { tracks ->
@@ -19,6 +20,7 @@ class TracksViewModel(private val interactor: FavouriteTracksInteractor, private
                 }
         }
     }
+
     private val stateFavoriteLiveData = MutableLiveData<FavouriteState>()
     fun observeState(): LiveData<FavouriteState> = stateFavoriteLiveData
     private fun processResult(tracks: List<Track>) {

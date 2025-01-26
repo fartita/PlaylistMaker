@@ -16,5 +16,6 @@ data class TrackDb(
     val primaryGenreName: String,
     val country: String,
     val previewUrl: String,
-    val isFavourite: Boolean
+    val isFavourite: Boolean,
+    val date: Long,
 )

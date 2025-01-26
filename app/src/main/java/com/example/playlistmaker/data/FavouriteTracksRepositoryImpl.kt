@@ -22,7 +22,7 @@ class FavouriteTracksRepositoryImpl(private val appDatabase: AppDatabase,
     }
 
     override suspend fun deleteFavoriteTrack(track: Track) {
-        val trackDb = convertToTrackEntity(track)
+        val trackDb = appDatabase.trackDao().getFavouriteTrack(track.trackId)
         appDatabase.trackDao().delete(trackDb)
     }
 
@@ -35,6 +35,7 @@ class FavouriteTracksRepositoryImpl(private val appDatabase: AppDatabase,
         return tracks.map { track -> trackDbConvertor.map(track) }
     }
     private fun convertToTrackEntity(track: Track): TrackDb {
-        return trackDbConvertor.map(track)
+        val date = System.currentTimeMillis()
+        return trackDbConvertor.map(track, date)
     }
 }

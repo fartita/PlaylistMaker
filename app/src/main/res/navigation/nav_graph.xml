@@ -18,5 +18,15 @@
         android:id="@+id/mediatekFragment"
         android:name="com.example.playlistmaker.presentation.fragments.MediatekFragment"
         android:label="fragment_library"
-        tools:layout="@layout/fragment_mediatek" />
+        tools:layout="@layout/fragment_mediatek">
+        <action
+        android:id="@+id/action_mediatekFragment_to_audioPlayer"
+        app:destination="@id/playerActivity"
+        />
+    </fragment>
+    <activity
+        android:id="@+id/playerActivity"
+        android:name="com.example.playlistmaker.presentation.PlayerActivity"
+        android:label="PlayerActivity" />
+
 </navigation>

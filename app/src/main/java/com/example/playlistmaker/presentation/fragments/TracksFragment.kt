@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.playlistmaker.R
 import com.example.playlistmaker.data.states.FavouriteState
 import com.example.playlistmaker.databinding.TracksFragmentBinding
 import com.example.playlistmaker.domain.model.Track
@@ -27,7 +29,7 @@ class TracksFragment : Fragment() {
     private var adapter = FavouriteTracksAdapter(tracks) {
         if (clickDebounce()) {
             viewModel.setTrack(it)
-            PlayerActivity.startActivity(requireContext())
+            findNavController().navigate(R.id.action_mediatekFragment_to_audioPlayer)
         }
     }
     private var isClickAllowed = true
@@ -54,6 +56,11 @@ class TracksFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.fill()
     }
 
     private fun render(state: FavouriteState) {

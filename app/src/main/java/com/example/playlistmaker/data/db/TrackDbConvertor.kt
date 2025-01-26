@@ -4,7 +4,7 @@ import com.example.playlistmaker.data.db.model.TrackDb
 import com.example.playlistmaker.domain.model.Track
 
 class TrackDbConvertor {
-    fun map(track: Track): TrackDb {
+    fun map(track: Track, date: Long): TrackDb {
         return TrackDb(
             track.trackId,
             track.trackName,
@@ -16,7 +16,8 @@ class TrackDbConvertor {
             track.primaryGenreName,
             track.country,
             track.previewUrl,
-            track.isFavourite
+            track.isFavourite,
+            date
         )
     }
     fun map(trackDb: TrackDb): Track {
