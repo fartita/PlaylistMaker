@@ -29,6 +29,7 @@ class PlayerActivity: AppCompatActivity() {
 
     private lateinit var playButton: ImageButton
     private lateinit var progressTimeView: TextView
+    private lateinit var likeButton: ImageButton
 
     private val viewModel by viewModel<PlayerViewModel>()
 
@@ -38,6 +39,7 @@ class PlayerActivity: AppCompatActivity() {
 
         playButton = findViewById(R.id.playButton)
         progressTimeView = findViewById(R.id.progressTime)
+        likeButton = findViewById(R.id.likeButton)
 
         val name = findViewById<TextView>(R.id.title)
         val artist = findViewById<TextView>(R.id.artist)
@@ -84,7 +86,21 @@ class PlayerActivity: AppCompatActivity() {
             progressTimeViewUpdate(it)
         }
 
-        viewModel.prepare(item.previewUrl)
+        viewModel.observeFavouriteState().observe(this){
+            favouriteRender(it)
+        }
+
+        likeButton.setOnClickListener {
+            viewModel.onFavouriteClicked(item)
+        }
+
+        viewModel.prepare(item)
+    }
+
+    private fun favouriteRender(favouriteChecked: Boolean) {
+        if (favouriteChecked)
+            likeButton.setImageResource(R.drawable.like_button_on)
+        else likeButton.setImageResource(R.drawable.like_button_off)
     }
 
 

@@ -8,6 +8,7 @@
         <item name="colorOnSecondary">@color/white</item>
         <item name="colorAccent">@color/grey</item>
         <item name="colorSurface">@color/grey_back</item>
+        <item name="colorPrimaryFixed">@color/search_form_text_color</item>
 
 
     </style>
