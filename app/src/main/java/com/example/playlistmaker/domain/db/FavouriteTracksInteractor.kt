@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 interface FavouriteTracksInteractor {
     fun showTracks(): Flow<List<Track>>
     suspend fun updateFavorite(track: Track): Track
+    suspend fun getTrack(trackId: Long): Flow<Track?>
 }

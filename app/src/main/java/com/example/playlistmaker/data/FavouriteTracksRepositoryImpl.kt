@@ -23,12 +23,17 @@ class FavouriteTracksRepositoryImpl(private val trackDao: TrackDao,
 
     override suspend fun deleteFavoriteTrack(track: Track) {
         val trackDb = trackDao.getFavouriteTrack(track.trackId)
-        trackDao.delete(trackDb)
+        if (trackDb != null) {
+            trackDao.delete(trackDb)
+        }
     }
 
-    override fun getFavoriteChecked(id: Long): Flow<List<Long>> = flow{
-        val tracksId = trackDao.getTrackId()
-        emit(tracksId)
+    override fun getFavoriteChecked(id: Long): Flow<Track?> = flow{
+        val trackDb = trackDao.getFavouriteTrack(id)
+        if(trackDb != null){
+            emit(trackDbConvertor.map(trackDb) )
+        }
+        else{emit(null)}
     }
 
     private fun convertFromTrackEntity(tracks: List<TrackDb>): List<Track> {

@@ -61,7 +61,16 @@ class PlayerViewModel(private val interactor: PlayControlInteractor, private val
 
     fun prepare(track: Track) {
         interactor.preparePlayer(track.previewUrl)
-        renderFavouriteState(track)
+        viewModelScope.launch {
+            favoriteInteractor.getTrack(track.trackId).collect{ it ->
+                if(it != null){
+                    renderFavouriteState(it)
+                }
+                else{
+                    renderFavouriteState(track)
+                }
+            }
+        }
     }
 
     fun playbackControl() {

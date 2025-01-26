@@ -19,4 +19,8 @@ class FavouriteTracksInteractorImpl(private val favoriteTracksRepository: Favour
             track
         }
     }
+
+    override suspend fun getTrack(trackId: Long): Flow<Track?> {
+        return favoriteTracksRepository.getFavoriteChecked(trackId)
+    }
 }
