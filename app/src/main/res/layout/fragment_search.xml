@@ -94,7 +94,7 @@
                 android:layout_marginTop="@dimen/margin_24"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:orientation="vertical"
-                tools:listitem="@layout/item_recycler_search_layout">
+                tools:listitem="@layout/item_track_recycler">
 
             </androidx.recyclerview.widget.RecyclerView>
 
@@ -167,7 +167,7 @@
                     android:orientation="vertical"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:itemCount="3"
-                    tools:listitem="@layout/item_recycler_search_layout" />
+                    tools:listitem="@layout/item_track_recycler" />
 
                 <Button
                     android:id="@+id/clearHistoryButton"
