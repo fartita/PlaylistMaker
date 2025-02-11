@@ -34,4 +34,16 @@
 
     <string name="favourites">Избранные треки</string>
     <string name="playlists">Плейлисты</string>
+
+    <string name="playlists_name">Название*</string>
+    <string name="playlists_description">Описание</string>
+    <string name="tracks">треков</string>
+    <string name="one_track">трек</string>
+    <string name="two_tracks">трека</string>
+    <string name="create_playlist">Плейлист создан:</string>
+    <string name="new_playlists">Новый плейлист</string>
+    <string name="create">Создать</string>
+    <string name="add">Добавить в плейлист</string>
+    <string name="add_playlist">Добавлено в плейлист</string>
+    <string name="track_in_playlist">Трек уже добавлен в плейлист</string>
 </resources>
