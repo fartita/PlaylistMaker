@@ -8,7 +8,11 @@
         android:id="@+id/searchFragment"
         android:name="com.example.playlistmaker.presentation.fragments.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search">
+    <action
+        android:id="@+id/action_searchFragment_to_audioPlayer"
+        app:destination="@id/audioPlayer" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.playlistmaker.presentation.fragments.SettingsFragment"
@@ -21,12 +25,24 @@
         tools:layout="@layout/fragment_mediatek">
         <action
         android:id="@+id/action_mediatekFragment_to_audioPlayer"
-        app:destination="@id/playerActivity"
+        app:destination="@id/audioPlayer"
+        />
+        <action
+            android:id="@+id/action_mediatekFragment_to_playlistCreatorFragment"
+            app:destination="@id/playlistCreatorFragment"
         />
     </fragment>
-    <activity
-        android:id="@+id/playerActivity"
-        android:name="com.example.playlistmaker.presentation.PlayerActivity"
-        android:label="PlayerActivity" />
+    <fragment
+        android:id="@+id/playlistCreatorFragment"
+        android:name="com.example.playlistmaker.presentation.fragments.PlaylistCreatorFragment"
+        android:label="PlaylistCreatorFragment" />
+    <fragment
+        android:id="@+id/audioPlayer"
+        android:name="com.example.playlistmaker.presentation.fragments.AudioPlayer"
+        android:label="AudioPlayer" >
+    <action
+        android:id="@+id/action_audioPlayer_to_playlistCreatorFragment"
+        app:destination="@id/playlistCreatorFragment" />
+    </fragment>
 
 </navigation>

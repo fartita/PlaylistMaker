@@ -9,7 +9,7 @@ import com.example.playlistmaker.data.db.model.TrackDb
 
 @Dao
 interface TrackDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(entity = TrackDb::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrack(track: TrackDb)
     @Delete(entity = TrackDb::class)
     suspend fun delete(track: TrackDb)
