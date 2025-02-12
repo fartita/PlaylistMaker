@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -17,7 +16,7 @@ import com.example.playlistmaker.data.states.PlayerState
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.model.Track
-import com.example.playlistmaker.presentation.recycler.PlaylistAdapter
+import com.example.playlistmaker.presentation.recycler.PlaylistPlayerAdapter
 import com.example.playlistmaker.presentation.viewmodels.player.PlayerViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -33,7 +32,7 @@ class AudioPlayer: Fragment() {
 
     private val playlists = mutableListOf<Playlist>()
     lateinit var track: Track
-    private val adapter = PlaylistAdapter(playlists) {
+    private val adapter = PlaylistPlayerAdapter(playlists) {
         viewModel.addToPlaylist(requireContext(), track, it)
     }
 

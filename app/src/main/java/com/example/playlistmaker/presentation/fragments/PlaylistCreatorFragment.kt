@@ -59,11 +59,11 @@ class PlaylistCreatorFragment : Fragment() {
                 }
             }
         val backAlertDialog = MaterialAlertDialogBuilder(requireActivity())
-            .setTitle("Завершить создание плейлиста?")
-            .setMessage("Все несохраненные данные будут потеряны")
-            .setNegativeButton("Отмена") { _, _ ->
+            .setTitle(getString(R.string.finish_playlist))
+            .setMessage(getString(R.string.warning))
+            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
             }
-            .setPositiveButton("Завершить") { _, _ ->
+            .setPositiveButton(getString(R.string.finish)) { _, _ ->
                 findNavController().navigateUp()
             }
         binding.playListImage.setOnClickListener {

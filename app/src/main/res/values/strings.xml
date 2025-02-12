@@ -48,4 +48,9 @@
     <string name="add">Add to playlist</string>
     <string name="add_playlist">Added to playlist</string>
     <string name="track_in_playlist">Track is already in playlist</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="finish">Finish</string>
+    <string name="finish_playlist">Do you want to finish of creation of playlist?</string>
+    <string name="warning">All unsaved data will be lost!</string>
 </resources>
