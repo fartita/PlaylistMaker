@@ -36,4 +36,21 @@
 
     <string name="favourites">Favourites tracks</string>
     <string name="playlists">Playlists</string>
+
+    <string name="playlists_name">Name*</string>
+    <string name="playlists_description">Description</string>
+    <string name="tracks">tracks</string>
+    <string name="one_track">track</string>
+    <string name="two_tracks">tracks</string>
+    <string name="create_playlist">Playlist has been created:</string>
+    <string name="new_playlists">New playlist</string>
+    <string name="create">Create</string>
+    <string name="add">Add to playlist</string>
+    <string name="add_playlist">Added to playlist</string>
+    <string name="track_in_playlist">Track is already in playlist</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="finish">Finish</string>
+    <string name="finish_playlist">Do you want to finish of creation of playlist?</string>
+    <string name="warning">All unsaved data will be lost!</string>
 </resources>

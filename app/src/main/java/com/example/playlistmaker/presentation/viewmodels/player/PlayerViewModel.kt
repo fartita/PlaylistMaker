@@ -1,6 +1,7 @@
 package com.example.playlistmaker.presentation.viewmodels.player
 
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,13 +10,18 @@ import com.example.playlistmaker.data.states.PlayerState
 import com.example.playlistmaker.domain.PlayControlInteractor
 import com.example.playlistmaker.domain.api.HistoryInteractor
 import com.example.playlistmaker.domain.db.FavouriteTracksInteractor
+import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.model.Track
+import com.example.playlistmaker.domain.playlist.PlaylistInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PlayerViewModel(private val interactor: PlayControlInteractor, private val historyInteractor: HistoryInteractor, private val favoriteInteractor: FavouriteTracksInteractor): ViewModel(){
+class PlayerViewModel(private val interactor: PlayControlInteractor,
+                      private val historyInteractor: HistoryInteractor,
+                      private val favoriteInteractor: FavouriteTracksInteractor,
+                      private val playlistInteractor: PlaylistInteractor): ViewModel(){
 
     private val DELAY_MILLIS = 300L
 
@@ -27,6 +33,12 @@ class PlayerViewModel(private val interactor: PlayControlInteractor, private val
 
     private val stateFavouriteData = MutableLiveData<Boolean>()
     fun observeFavouriteState(): LiveData<Boolean> = stateFavouriteData
+
+    private val playListsLiveData = MutableLiveData<List<Playlist>>()
+    fun observePlaylistState(): LiveData<List<Playlist>> = playListsLiveData
+
+    private val addLiveData = MutableLiveData<String>()
+    fun observeAddDtate(): LiveData<String> = addLiveData
 
     private var timerJob: Job? = null
 
@@ -100,5 +112,24 @@ class PlayerViewModel(private val interactor: PlayControlInteractor, private val
     }
     private fun renderFavouriteState(track: Track) {
         stateFavouriteData.postValue(track.isFavourite)
+    }
+
+    private fun renderToastState(message: String) {
+        addLiveData.postValue(message)
+    }
+
+    fun addToPlaylist(context: Context, track: Track, playList: Playlist) {
+        viewModelScope.launch {
+            val message = playlistInteractor.addTrack(context, track, playList) + playList.name
+            renderToastState(message)
+        }
+    }
+    fun renderPlayLists() {
+        viewModelScope.launch {
+            playlistInteractor.getPlayLists()
+                .collect { playLists ->
+                    playListsLiveData.postValue(playLists)
+                }
+        }
     }
 }

@@ -11,7 +11,6 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.data.states.FavouriteState
 import com.example.playlistmaker.databinding.TracksFragmentBinding
 import com.example.playlistmaker.domain.model.Track
-import com.example.playlistmaker.presentation.PlayerActivity
 import com.example.playlistmaker.presentation.recycler.FavouriteTracksAdapter
 import com.example.playlistmaker.presentation.viewmodels.library.TracksViewModel
 import kotlinx.coroutines.delay
