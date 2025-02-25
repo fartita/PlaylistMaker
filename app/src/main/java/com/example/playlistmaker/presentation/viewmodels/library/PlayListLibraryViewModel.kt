@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.data.states.PlaylistState
 import com.example.playlistmaker.domain.model.Playlist
-import com.example.playlistmaker.domain.playlist.PlaylistInteractor
+import com.example.playlistmaker.domain.playlist.PlaylistLibraryInteractor
 import kotlinx.coroutines.launch
 
-class PlayListViewModel(private val interactor: PlaylistInteractor) : ViewModel() {
+class PlayListLibraryViewModel(private val interactor: PlaylistLibraryInteractor) : ViewModel() {
     private val stateLiveData = MutableLiveData<PlaylistState>()
     fun observeState(): LiveData<PlaylistState> = stateLiveData
     fun fill() {

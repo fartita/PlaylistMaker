@@ -25,19 +25,21 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.presentation.MainActivity.Companion.ALBUM
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 
-class PlaylistCreatorFragment : Fragment() {
-    private val viewModel by viewModel<PlaylistCreatorViewModel>()
+open class PlaylistCreatorFragment : Fragment() {
+    open val viewModel by viewModel<PlaylistCreatorViewModel>()
     private var _binding: FragmentPlaylistCreatorBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
     private var nameInputText: String = ""
     private var descriptionTextWatcher: TextWatcher? = null
     private var nameTextWatcher: TextWatcher? = null
-    private lateinit var filePath: File
+    lateinit var filePath: File
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,9 +48,10 @@ class PlaylistCreatorFragment : Fragment() {
         _binding = FragmentPlaylistCreatorBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         filePath =
-            File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "album")
+            File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), ALBUM)
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
@@ -58,77 +61,96 @@ class PlaylistCreatorFragment : Fragment() {
                     Log.d("PhotoPicker", "No media selected")
                 }
             }
-        val backAlertDialog = MaterialAlertDialogBuilder(requireActivity())
-            .setTitle(getString(R.string.finish_playlist))
-            .setMessage(getString(R.string.warning))
-            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
-            }
-            .setPositiveButton(getString(R.string.finish)) { _, _ ->
-                findNavController().navigateUp()
-            }
+        viewModel.observeStateLiveData().observe(viewLifecycleOwner) {
+            renderSave(it)
+        }
         binding.playListImage.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
+
         nameTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 nameInputText = s?.toString() ?: ""
                 viewModel.setName(nameInputText)
                 binding.createButton.isEnabled = !s.isNullOrEmpty()
             }
+
             override fun afterTextChanged(s: Editable?) {
             }
         }
         nameTextWatcher?.let { binding.nameET.addTextChangedListener(it) }
         descriptionTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.isNullOrEmpty()) {
-                    viewModel.setDescription(s?.toString() ?: "")
-                }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                viewModel.setDescription(s?.toString() ?: "")
+            }
+
             override fun afterTextChanged(s: Editable?) {
             }
         }
         descriptionTextWatcher?.let { binding.descriptionET.addTextChangedListener(it) }
+
         binding.createButton.setOnClickListener {
-            lifecycleScope.launch {
-                if(viewModel.getUri() != null)
-                    saveImageToPrivateStorage(
-                        viewModel.savePlaylist(filePath.toURI()),
-                        viewModel.getUri()!!
-                    ) else viewModel.savePlaylist(filePath.toURI())
-                showToast(viewModel.getMessage(requireContext()))
-                findNavController().navigateUp()
-            }
+            savePlaylist()
         }
+
         binding.backButton.setOnClickListener {
-            if (viewModel.checkInput()) backAlertDialog.show()  else findNavController().navigateUp()
+            goBack()
         }
-        requireActivity().onBackPressedDispatcher.addCallback(object: OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (viewModel.checkInput()) backAlertDialog.show() else findNavController().navigateUp()
-            }
-        })
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    goBack()
+                }
+            })
     }
-    private fun showToast(message: String) {
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    open fun savePlaylist() {
+        viewModel.savePlaylist(filePath)
+    }
+
+    open fun goBack() {
+        if (viewModel.checkInput()) showDialog() else findNavController().navigateUp()
+    }
+
+
+    private fun showDialog() {
+        MaterialAlertDialogBuilder(requireActivity(), R.style.AlertDialogTheme)
+            .setTitle(R.string.back_alert_title)
+            .setMessage(R.string.back_alert_message)
+            .setNegativeButton(R.string.negative_button) { _, _ ->
+            }
+            .setPositiveButton(getString(R.string.positive_button)) { _, _ ->
+                findNavController().navigateUp()
+            }.show()
+    }
+
+    private fun renderSave(playListName: String) {
+        findNavController().navigateUp()
+        val message = getString(R.string.add_playlist).format(playListName)
         Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show()
     }
-    private fun saveImageToPrivateStorage(fileName: String, uri: Uri) {
-        if (!filePath.exists()) {
-            filePath.mkdirs()
-        }
-        val file = File(filePath, "${fileName}.jpg")
-        val inputStream = requireActivity().contentResolver.openInputStream(uri)
-        val outputStream = FileOutputStream(file)
-        BitmapFactory
-            .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
-    }
-    private fun showPicture(pictureUri: String) {
+
+    fun showPicture(pictureUri: String) {
         Glide.with(requireActivity())
             .load(pictureUri)
-            .transform(CenterCrop(), RoundedCorners(requireActivity().resources.getDimensionPixelSize(R.dimen.margin_8)))
+            .placeholder(R.drawable.ic_track)
+            .transform(
+                CenterCrop(),
+                RoundedCorners(requireActivity().resources.getDimensionPixelSize(R.dimen.margin_8))
+            )
             .into(binding.playListImage)
     }
 }

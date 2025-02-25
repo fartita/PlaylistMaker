@@ -1,9 +1,12 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.presentation.viewmodels.library.PlayListViewModel
+import com.example.playlistmaker.presentation.viewmodels.activity.HostPlaylistViewModel
+import com.example.playlistmaker.presentation.viewmodels.library.PlayListLibraryViewModel
+import com.example.playlistmaker.presentation.viewmodels.library.OnePlayListViewModel
 import com.example.playlistmaker.presentation.viewmodels.library.TracksViewModel
 import com.example.playlistmaker.presentation.viewmodels.player.PlayerViewModel
 import com.example.playlistmaker.presentation.viewmodels.playlist_creator.PlaylistCreatorViewModel
+import com.example.playlistmaker.presentation.viewmodels.playlist_editor.PlaylistEditorViewModel
 import com.example.playlistmaker.presentation.viewmodels.search.SearchViewModel
 import com.example.playlistmaker.presentation.viewmodels.settings.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -24,7 +27,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        PlayListViewModel(get())
+        PlayListLibraryViewModel(get())
     }
     viewModel {
         TracksViewModel(get(), get())
@@ -33,5 +36,14 @@ val viewModelModule = module {
     viewModel {
         PlaylistCreatorViewModel(get())
     }
+    viewModel {
+        PlaylistEditorViewModel(get())
+    }
+    viewModel{
+        OnePlayListViewModel(get(), get(), get())
+    }
 
+    viewModel{
+        HostPlaylistViewModel()
+    }
 }

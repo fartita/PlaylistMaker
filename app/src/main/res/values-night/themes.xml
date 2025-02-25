@@ -38,7 +38,7 @@
     <style name="HeadStyle">
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textFontWeight">500</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:textSize">@dimen/header_size</item>
         <item name ="android:src">@drawable/ic_arrow_back_white</item>
     </style>
@@ -86,11 +86,11 @@
         <item name="cornerRadius">@dimen/margin_9</item>
         <item name="iconGravity">textStart</item>
         <item name="android:drawablePadding">@dimen/margin_9</item>
-        <item name="drawableTint">@color/black</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textColorHint">@color/black</item>
+        <item name="drawableTint">?attr/colorOnPrimary</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textColorHint">?attr/colorOnPrimary</item>
         <item name="android:shadowRadius">0</item>
-        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:backgroundTint">?attr/colorOnSecondary</item>
     </style>
 
     <style name="create_button" parent="Widget.MaterialComponents.Button">
