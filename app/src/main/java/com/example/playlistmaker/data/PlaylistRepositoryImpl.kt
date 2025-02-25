@@ -22,7 +22,10 @@ class PlaylistRepositoryImpl(
         emit(convertFromEntity(playLists))
     }
     private fun convertFromEntity(playLists: List<PlaylistDb>): List<Playlist> {
-        return playLists.map { playList -> playListDbMapper.map(playList) }
+        return playLists.map { playList ->
+            val tracks = convertToList(playList.tracks)
+            playListDbMapper.map(playList, tracks)
+        }
     }
     override suspend fun addPlaylist(playList: Playlist): Long {
         val playListEntity = convertToTrackEntity(playList)
@@ -30,28 +33,53 @@ class PlaylistRepositoryImpl(
     }
     override suspend fun addTrack(track: Track, playList: Playlist) {
         ++playList.trackCount
-        playList.tracks = setTrack(track, playList.tracks)
+        playList.tracks.add(track)
         val playListEntity = convertToTrackEntity(playList)
         dao.updatePlayList(playListEntity)
     }
-    override suspend fun getTrackList(playList: Playlist): List<Track> {
-        val tracks = dao.getTrackList(playList.id).first()
+    override suspend fun getTrackList(playListId: Long): List<Track> {
+        val tracks = dao.getTrackList(playListId).first()
         return convertToList(tracks)
     }
+
+    override fun getPlayList(playListId: Long): Flow<Playlist> = flow {
+        val playListDb = dao.getPlayList(playListId).first()
+        emit(convertPayListFromEntity(playListDb))
+    }
+
+    override suspend fun delete(playlist: Playlist) {
+        val playListEntity = convertToTrackEntity(playlist)
+        dao.delete(playListEntity)
+    }
+
+    override suspend fun removeTrack(track: Track, playList: Playlist) {--playList.trackCount
+        playList.tracks.remove(track)
+        val playListEntity = convertToTrackEntity(playList)
+        dao.updatePlayList(playListEntity)
+    }
+
+    override suspend fun updatePlayList(playList: Playlist) {
+        val playListEntity = convertToTrackEntity(playList)
+        dao.updatePlayList(playListEntity)
+    }
+
     private fun convertToTrackEntity(playList: Playlist): PlaylistDb {
-        return playListDbMapper.map(playList)
+        val tracks = convertFromList(playList.tracks)
+        return playListDbMapper.map(playList, tracks)
+    }
+
+    private fun convertPayListFromEntity(playList: PlaylistDb): Playlist {
+        val tracks = convertToList(playList.tracks)
+        return playListDbMapper.map(playList,tracks)
+    }
+
+    private fun convertFromList(tracks: MutableList<Track>): String {
+        return gson.toJson(tracks)
     }
 
     private fun convertToList(jsonList: String?): MutableList<Track> {
         val listOfMyClassObject: Type = object : TypeToken<ArrayList<Track>?>() {}.type
         return if (!jsonList.isNullOrEmpty()) gson.fromJson(jsonList, listOfMyClassObject) else mutableListOf()
     }
-    private fun setTrack(track: Track, jsonList: String?): String {
-        val tracks = convertToList(jsonList)
-        tracks.add(0, track)
-        return write(tracks)
-    }
-    private fun write(tracks: MutableList<Track>): String {
-        return gson.toJson(tracks)
-    }
+
 }

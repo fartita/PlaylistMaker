@@ -2,49 +2,68 @@ package com.example.playlistmaker.presentation.viewmodels.playlist_creator
 
 import android.content.Context
 import android.net.Uri
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.playlist.PlaylistCreatorInteractor
+import kotlinx.coroutines.launch
+import java.io.File
 import java.net.URI
 
-class PlaylistCreatorViewModel(private val interactor: PlaylistCreatorInteractor) : ViewModel() {
-    private var playListName: String = ""
-    private var description: String = ""
-    private var fileDir: Uri? = null
-    suspend fun savePlaylist(toURI: URI): String {
+open class PlaylistCreatorViewModel(private val interactor: PlaylistCreatorInteractor) : ViewModel() {
+    val nameLiveData = MutableLiveData<String>()
+    val descriptionLiveData = MutableLiveData<String>()
+    var fileDir: Uri? = null
+    private val stateLiveData = MutableLiveData<String>()
+    fun observeStateLiveData(): LiveData<String> = stateLiveData
+
+    private suspend fun createPlaylist(): String {
         val fileName = if (fileDir != null) {
-            (interactor.savePlaylist(playListName, description, toURI.toString()))
+            (interactor.createPlaylist(nameLiveData.value!!, descriptionLiveData.value?: "", fileDir.toString()))
         } else {
-            interactor.savePlaylist(playListName, description, "")
+            interactor.createPlaylist(nameLiveData.value!!, descriptionLiveData.value?: "", "")
         }
         return fileName.toString()
     }
+
     fun setName(changedText: String) {
-        if (playListName == changedText) {
-            return
-        }
-        this.playListName = changedText
+        nameLiveData.postValue(changedText)
     }
+
     fun setDescription(changedText: String) {
-        if (description == changedText) {
-            return
-        }
-        this.description = changedText
+        descriptionLiveData.postValue(changedText)
     }
+
     fun setUri(uri: Uri) {
         if (fileDir == uri) {
             return
         }
         this.fileDir = uri
     }
-    fun getUri(): Uri? {
-        return fileDir
-    }
-    fun getMessage(context: Context): String {
-        val message = context.resources.getString(R.string.create_playlist)
-        return message+playListName
-    }
+
     fun checkInput(): Boolean {
-        return (fileDir != null) || playListName.isNotEmpty() || description.isNotEmpty()
+        return (fileDir != null) || !nameLiveData.value.isNullOrEmpty()|| !nameLiveData.value.isNullOrEmpty()
+    }
+
+    fun saveImage(filePath: File, savePlaylist: String) {
+        viewModelScope.launch {
+            interactor.saveImage(filePath, savePlaylist, fileDir!!)
+        }
+    }
+
+    open fun savePlaylist(filePath: File) {
+        viewModelScope.launch {
+            if (fileDir != null)
+                saveImage(
+                    filePath,
+                    createPlaylist(),
+                ) else createPlaylist()
+            renderState(nameLiveData.value!!)
+        }
+    }
+    private fun renderState(state: String) {
+        stateLiveData.postValue(state)
     }
 }

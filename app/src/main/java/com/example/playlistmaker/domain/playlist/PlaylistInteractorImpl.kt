@@ -1,22 +1,36 @@
 package com.example.playlistmaker.domain.playlist
 
-import android.content.Context
-import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.repository.PlaylistRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import java.time.Duration
 
-class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository) :
-    PlaylistInteractor {
-    override fun getPlayLists(): Flow<List<Playlist>> {
-        return playlistRepository.getPlayLists()
+class PlaylistInteractorImpl(private val repository: PlaylistRepository) : PlaylistInteractor {
+    override fun getPlayList(playListId: Long): Flow<Playlist> {
+        return repository.getPlayList(playListId)
     }
-    override suspend fun addTrack(context: Context, track: Track, playList: Playlist): String {
-        val tracks = playlistRepository.getTrackList(playList)
-        return if (tracks.isEmpty() || !tracks.contains(track)) {
-            playlistRepository.addTrack(track, playList)
-            context.resources.getString(R.string.add_playlist)
-        } else context.resources.getString(R.string.track_in_playlist)
+
+    override fun getTracks(playList: Playlist): Flow<List<Track>> = flow {
+        emit(repository.getTrackList(playList.id))
+    }
+
+    override fun getPlayListTime(tracks: List<Track>): Int {
+        var playListTime = 0L
+        for (track in tracks){
+            playListTime = track.trackTime
+        }
+        val duration = Duration.ofMillis(playListTime)
+        val minutes = duration.toMinutes()
+        return (minutes).toInt()
+    }
+
+    override suspend fun delete(playlist: Playlist) {
+        repository.delete(playlist)
+    }
+
+    override suspend fun removeTrack(track: Track, playList: Playlist)  {
+        repository.removeTrack(track,playList)
     }
 }
