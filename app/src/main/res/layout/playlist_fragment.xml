@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorOnSecondary">
+        android:background="@color/grey">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/leftBorder"
@@ -37,7 +37,12 @@
 
         <ImageView
             android:id="@+id/backButton"
-            style="@style/HeadStyle"
+            android:fontFamily="@font/ys_display_medium"
+            android:textFontWeight="500"
+            android:textColor="@color/black"
+            android:textSize="@dimen/header_size"
+            app:tint="@color/black"
+            android:src="@drawable/ic_arrow_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_16"
