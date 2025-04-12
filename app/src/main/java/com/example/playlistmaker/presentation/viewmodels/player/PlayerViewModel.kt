@@ -91,9 +91,6 @@ class PlayerViewModel(private val interactor: PlayControlInteractor,
         if (state == PlayerState.PLAYING) startTimer(state) else cancelTimer()
     }
 
-    private fun renderState(state: PlayerState) {
-        stateLiveData.postValue(state)
-    }
 
     override fun onCleared() {
         super.onCleared()
@@ -131,5 +128,9 @@ class PlayerViewModel(private val interactor: PlayControlInteractor,
                     playListsLiveData.postValue(playLists)
                 }
         }
+    }
+
+    private fun renderState(state: PlayerState) {
+        stateLiveData.postValue(state)
     }
 }
