@@ -12,7 +12,7 @@ import com.example.playlistmaker.domain.api.HistoryInteractor
 import com.example.playlistmaker.domain.db.FavouriteTracksInteractor
 import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.model.Track
-import com.example.playlistmaker.domain.playlist.PlaylistInteractor
+import com.example.playlistmaker.domain.playlist.PlaylistLibraryInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class PlayerViewModel(private val interactor: PlayControlInteractor,
                       private val historyInteractor: HistoryInteractor,
                       private val favoriteInteractor: FavouriteTracksInteractor,
-                      private val playlistInteractor: PlaylistInteractor): ViewModel(){
+                      private val playlistLibraryInteractor: PlaylistLibraryInteractor): ViewModel(){
 
     private val DELAY_MILLIS = 300L
 
@@ -120,13 +120,13 @@ class PlayerViewModel(private val interactor: PlayControlInteractor,
 
     fun addToPlaylist(context: Context, track: Track, playList: Playlist) {
         viewModelScope.launch {
-            val message = playlistInteractor.addTrack(context, track, playList) + playList.name
+            val message = playlistLibraryInteractor.addTrack(context, track, playList) + playList.name
             renderToastState(message)
         }
     }
     fun renderPlayLists() {
         viewModelScope.launch {
-            playlistInteractor.getPlayLists()
+            playlistLibraryInteractor.getPlayLists()
                 .collect { playLists ->
                     playListsLiveData.postValue(playLists)
                 }

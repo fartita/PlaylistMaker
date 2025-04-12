@@ -7,7 +7,10 @@
     <string name="share_app">Share app</string>
     <string name="write_support">Write to support</string>
     <string name="user_term">User term</string>
+    <string name="message">https://practicum.yandex.ru/profile/android-developer/</string>
+    <string name="error_toast_message">There is no app to launch command</string>
 
+    <string name="offer" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
     <string name="share_link" translatable="false">https://practicum.yandex.ru/android-developer/</string>
     <string name="support_address" translatable="false">varvaran96@yandex.ru</string>
     <string name="email_message">Thanks to developers for this cool app!</string>
@@ -46,11 +49,46 @@
     <string name="new_playlists">New playlist</string>
     <string name="create">Create</string>
     <string name="add">Add to playlist</string>
-    <string name="add_playlist">Added to playlist</string>
+    <string name="add_playlist">Added to playlist «%s»</string>
     <string name="track_in_playlist">Track is already in playlist</string>
+    <string name="back_alert_message">All unsaved data will be lost</string>
+    <string name="back_alert_title">Finish of creation of playlist?</string>
 
     <string name="cancel">Cancel</string>
     <string name="finish">Finish</string>
     <string name="finish_playlist">Do you want to finish of creation of playlist?</string>
     <string name="warning">All unsaved data will be lost!</string>
+
+    <string name="positive_button">Finish</string>
+    <string name="negative_button">Cancel</string>
+    <string name="yes_button">Yes</string>
+    <string name="no_button">No</string>
+    <string name="delete_playlist_alert_title">Do you want to delete playlist «%s»?</string>
+    <string name="delete_track_alert_title">Delete track</string>
+    <string name="delete_track_alert_message">Are you sure to delete this track</string>
+    <string name="save">Save</string>
+    <string name="edit">Edit</string>
+    <string name="share_mistake">There is no tracks to share</string>
+    <string name="ok">Ок</string>
+    <string name="share_menu_text">Share</string>
+    <string name="update_menu_text">Edit info</string>
+    <string name="delete_menu_text">Delete playlist</string>
+
+    <plurals name="tracksContOfList">
+        <item quantity="zero">%1$d tracks</item>
+        <item quantity="one">%1$d track</item>
+        <item quantity="two">%1$d tracks</item>
+        <item quantity="few">%1$d tracks</item>
+        <item quantity="many">%1$d tracks</item>
+        <item quantity="other">%1$d tracks</item>
+    </plurals>
+
+    <plurals name="minutes">
+        <item quantity="zero">%1$d minutes</item>
+        <item quantity="one">%1$d minute</item>
+        <item quantity="two">%1$d minutes</item>
+        <item quantity="few">%1$d minutes</item>
+        <item quantity="many">%1$d minutes</item>
+        <item quantity="other">%1$d minutes</item>
+    </plurals>
 </resources>

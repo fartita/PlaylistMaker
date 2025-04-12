@@ -7,6 +7,7 @@ import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.db.AppDatabase
 import com.example.playlistmaker.data.db.PlaylistDbConvertor
 import com.example.playlistmaker.data.db.TrackDbConvertor
+import com.example.playlistmaker.data.file_storage.FilePrivateStorage
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.data.network.SearchApi
 import com.google.gson.Gson
@@ -66,6 +67,10 @@ val dataModule = module{
 
     single{
         PlaylistDbConvertor()
+    }
+
+    single{
+        FilePrivateStorage(get())
     }
 
 }
