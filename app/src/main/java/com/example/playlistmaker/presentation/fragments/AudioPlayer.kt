@@ -70,7 +70,7 @@ class AudioPlayer: Fragment() {
             }
         })
         binding.recyclerView.adapter = adapter
-        binding.playButton.setOnClickListener { viewModel.playbackControl() }
+        binding.playButton.onTouchListener = { viewModel.playbackControl() }
 
         viewModel.observeState().observe(viewLifecycleOwner){
             render(it)
@@ -127,14 +127,6 @@ class AudioPlayer: Fragment() {
     }
 
 
-    private fun startPlayer() {
-        binding.playButton.setImageResource(R.drawable.pause_button)
-    }
-
-    private fun pausePlayer() {
-        binding.playButton.setImageResource(R.drawable.play_button)
-    }
-
     private fun progressTimeViewUpdate(progressTime: String) {
         binding.progressTime.text = progressTime
     }
@@ -145,12 +137,6 @@ class AudioPlayer: Fragment() {
         viewModel.onPause()
     }
 
-    private fun render(state: PlayerState){
-        when(state){
-            PlayerState.PLAYING -> startPlayer()
-            PlayerState.PAUSED, PlayerState.PREPARED -> pausePlayer()
-        }
-    }
 
     private fun renderPlayList(list: List<Playlist>) {
         playlists.clear()
@@ -160,6 +146,21 @@ class AudioPlayer: Fragment() {
 
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun render(state: PlayerState) {
+        when (state) {
+            PlayerState.PLAYING -> startPlayer()
+            PlayerState.PAUSED, PlayerState.PREPARED -> pausePlayer()
+        }
+    }
+
+    private fun startPlayer() {
+        binding.playButton.changeButtonStatus(true)
+    }
+
+    private fun pausePlayer() {
+        binding.playButton.changeButtonStatus(false)
     }
 
 }
