@@ -1,6 +1,8 @@
 package com.example.playlistmaker.presentation.fragments
 
 import android.content.Context.INPUT_METHOD_SERVICE
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -18,6 +21,7 @@ import com.example.playlistmaker.data.states.SearchState
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.presentation.recycler.SearchAdapter
+import com.example.playlistmaker.presentation.util.ConnectionBroadcastReceiver
 import com.example.playlistmaker.presentation.viewmodels.search.SearchViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -32,6 +36,7 @@ class SearchFragment : Fragment() {
 
     private val viewModel by viewModel<SearchViewModel>()
     private val tracksUI = ArrayList<Track>()
+    private val connectionBroadcastReceiver = ConnectionBroadcastReceiver()
 
     private val tracksAdapter = SearchAdapter(tracksUI) {
         if(clickDebounce()){
@@ -94,6 +99,21 @@ class SearchFragment : Fragment() {
         }
 
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        ContextCompat.registerReceiver(
+            requireContext(),
+            connectionBroadcastReceiver,
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireContext().unregisterReceiver(connectionBroadcastReceiver)
     }
 
     private fun clearSearchForm() {
