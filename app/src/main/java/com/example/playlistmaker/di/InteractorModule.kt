@@ -1,7 +1,5 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.domain.PlayControlInteractor
-import com.example.playlistmaker.domain.PlayControlInteractorImpl
 import com.example.playlistmaker.domain.api.HistoryInteractor
 import com.example.playlistmaker.domain.api.HistoryInteractorImpl
 import com.example.playlistmaker.domain.api.TracksInteractor
@@ -41,9 +39,6 @@ val interactorModule = module {
         SettingsInteractorImpl(get())
     }
 
-    factory<PlayControlInteractor>{
-        PlayControlInteractorImpl(get())
-    }
 
     factory<FavouriteTracksInteractor>{
         FavouriteTracksInteractorImpl(get())
