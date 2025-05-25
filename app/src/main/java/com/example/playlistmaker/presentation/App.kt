@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.material3.ColorScheme
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.interactorModule
 import com.example.playlistmaker.di.repositoryModule
@@ -13,13 +14,18 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
 import com.example.playlistmaker.domain.settings.SettingsInteractor
+import com.example.playlistmaker.presentation.compose.darkColorAppScheme
+import com.example.playlistmaker.presentation.compose.lightColorAppScheme
 
 
 class App : Application() {
 
     private var darkTheme = false
 
+
     companion object{
+
+        lateinit var appColorScheme: ColorScheme
 
         @SuppressLint("StaticFieldLeak")
         private lateinit var sInstance: Context
@@ -48,8 +54,10 @@ class App : Application() {
         darkTheme = darkThemeEnabled
         AppCompatDelegate.setDefaultNightMode(
             if (darkThemeEnabled) {
+                appColorScheme = darkColorAppScheme
                 AppCompatDelegate.MODE_NIGHT_YES
             } else {
+                appColorScheme = lightColorAppScheme
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )

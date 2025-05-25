@@ -17,6 +17,9 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.data.states.SearchState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class SearchViewModel(private val searchInteractor: TracksInteractor, private val historyInteractor: HistoryInteractor): ViewModel() {
@@ -25,36 +28,42 @@ class SearchViewModel(private val searchInteractor: TracksInteractor, private va
         private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
 
     }
-    private val stateLiveData = MutableLiveData<SearchState>()
-    fun observeState(): LiveData<SearchState> = stateLiveData
+    private val _text = MutableStateFlow("")
+    val text: StateFlow<String> = _text.asStateFlow()
+    private val _stateLiveData = MutableLiveData<SearchState>()
+    val stateData: LiveData<SearchState> = _stateLiveData
 
     private var latestSearchText: String? = null
     private var searchJob: Job? = null
 
-    fun searchDebounce(changedText: String) {
-        if(changedText.isEmpty()){
+    fun onTextChanged(newText: String) {
+        _text.value = newText
+    }
+
+    fun searchDebounce() {
+        if(text.value.isEmpty()){
             searchHistory()
+            return
         }
-        else{
-            if (latestSearchText == changedText) {
-                return
-            }
-            this.latestSearchText = changedText
-
-
-            searchJob?.cancel()
-            searchJob = viewModelScope.launch {
-                delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
-                search(changedText)
-            }
+        if (latestSearchText == text.value) {
+            return
         }
-
+        this.latestSearchText = text.value
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
+            search(text.value)
+        }
     }
 
     private val tracksList = ArrayList<Track>()
 
+    fun repeatSearch(){
+        latestSearchText?.let { search(it) }
+    }
 
-        private fun searchHistory() {
+
+    private fun searchHistory() {
             viewModelScope.launch{
                 historyInteractor.getTrackList().collect{ history ->
                     if (history.isNotEmpty())
@@ -67,7 +76,7 @@ class SearchViewModel(private val searchInteractor: TracksInteractor, private va
                     )
                 }
             }
-        }
+    }
 
         fun setTrack(track: Track) {
             historyInteractor.setTrack(track)
@@ -75,8 +84,7 @@ class SearchViewModel(private val searchInteractor: TracksInteractor, private va
 
         fun clear() {
             historyInteractor.clear()
-            renderState(
-                SearchState.AllEmpty)
+            searchHistory()
         }
 
 
@@ -106,6 +114,6 @@ class SearchViewModel(private val searchInteractor: TracksInteractor, private va
         }
 
         private fun renderState(state: SearchState) {
-            stateLiveData.postValue(state)
+            _stateLiveData.postValue(state)
         }
 }

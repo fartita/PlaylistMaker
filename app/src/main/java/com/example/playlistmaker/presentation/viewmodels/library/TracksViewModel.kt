@@ -21,8 +21,9 @@ class TracksViewModel(private val interactor: FavouriteTracksInteractor, private
         }
     }
 
-    private val stateFavoriteLiveData = MutableLiveData<FavouriteState>()
-    fun observeState(): LiveData<FavouriteState> = stateFavoriteLiveData
+    private val _stateFavoriteLiveData = MutableLiveData<FavouriteState>()
+    val stateFavouriteLiveData: LiveData<FavouriteState> = _stateFavoriteLiveData
+
     private fun processResult(tracks: List<Track>) {
         if (tracks.isEmpty()) {
             renderState(FavouriteState.Empty)
@@ -31,7 +32,7 @@ class TracksViewModel(private val interactor: FavouriteTracksInteractor, private
         }
     }
     private fun renderState(state: FavouriteState) {
-        stateFavoriteLiveData.postValue(state)
+        _stateFavoriteLiveData.postValue(state)
     }
 
     fun setTrack(item:Track){

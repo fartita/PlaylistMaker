@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.devtools.ksp)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -21,6 +22,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
     }
     buildTypes {
         release {
@@ -46,10 +48,14 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation (libs.material)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.material3)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.runtime.livedata)
     ksp(libs.room.compiler)
     implementation(libs.room)
     implementation(libs.room.runtime)
@@ -60,6 +66,8 @@ dependencies {
     implementation(libs.material.v190)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.glide)
+    implementation(libs.compose)
+
     annotationProcessor(libs.compiler)
 
     implementation(libs.retrofit)

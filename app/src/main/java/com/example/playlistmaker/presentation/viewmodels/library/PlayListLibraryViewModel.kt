@@ -10,8 +10,8 @@ import com.example.playlistmaker.domain.playlist.PlaylistLibraryInteractor
 import kotlinx.coroutines.launch
 
 class PlayListLibraryViewModel(private val interactor: PlaylistLibraryInteractor) : ViewModel() {
-    private val stateLiveData = MutableLiveData<PlaylistState>()
-    fun observeState(): LiveData<PlaylistState> = stateLiveData
+    private val _stateLiveData = MutableLiveData<PlaylistState>()
+    val stateLiveData: LiveData<PlaylistState> = _stateLiveData
     fun fill() {
         viewModelScope.launch {
             interactor.getPlayLists()
@@ -28,6 +28,6 @@ class PlayListLibraryViewModel(private val interactor: PlaylistLibraryInteractor
         }
     }
     private fun renderState(state: PlaylistState) {
-        stateLiveData.postValue(state)
+        _stateLiveData.postValue(state)
     }
 }
