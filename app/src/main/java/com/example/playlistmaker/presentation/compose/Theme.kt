@@ -19,5 +19,5 @@ val lightColorAppScheme = lightColorScheme(
     background = White,
     secondary = YpBlack,
     onSurface = Grey,
-    surfaceContainer = HintGrey
+    surfaceContainer = GreyBack
 )

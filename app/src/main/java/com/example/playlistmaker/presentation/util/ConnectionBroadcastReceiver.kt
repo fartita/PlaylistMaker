@@ -11,7 +11,7 @@ class ConnectionBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (isConnected(context)) {
-            Toast.makeText(context, "Отствует Подклюяение к интернету", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Отсутствует Подключение к интернету", Toast.LENGTH_LONG).show()
         }
     }
 

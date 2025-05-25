@@ -1,20 +1,12 @@
 package com.example.playlistmaker.presentation.compose
 
-import androidx.compose.runtime.Composable
-import android.content.res.Resources
-import android.graphics.drawable.Drawable
-import android.widget.EditText
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.TopAppBar
-import com.example.playlistmaker.presentation.viewmodels.search.SearchViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,67 +18,40 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Shapes
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.Typography
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -94,7 +59,6 @@ import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.states.FavouriteState
 import com.example.playlistmaker.data.states.PlaylistState
-import com.example.playlistmaker.data.states.SearchState
 import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.presentation.App.Companion.appColorScheme
@@ -104,15 +68,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.Locale
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MediatekScreen(tracksViewModel: TracksViewModel,
-                   playListsViewModel: PlayListLibraryViewModel,
-                   onTrackClick: (Track) -> Unit,
-                   onPlaylistClick: (Playlist) -> Unit,
-                   onNewPlaylistClick: () -> Unit
+fun MediatekScreen(
+    tracksViewModel: TracksViewModel,
+    playListsViewModel: PlayListLibraryViewModel,
+    onTrackClick: (Track) -> Unit,
+    onPlaylistClick: (Playlist) -> Unit,
+    onNewPlaylistClick: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { 2 }, initialPage = 0)
@@ -123,7 +87,7 @@ fun MediatekScreen(tracksViewModel: TracksViewModel,
         modifier = Modifier
             .fillMaxSize()
             .background(color = appColorScheme.background)
-            //.padding(top = 16.dp)
+        //.padding(top = 16.dp)
     ) {
         TopAppBar(
             title = {
@@ -134,7 +98,10 @@ fun MediatekScreen(tracksViewModel: TracksViewModel,
                     fontFamily = FontFamily(Font(R.font.ys_display_medium, FontWeight.Bold))
                 )
             },
-            colors = TopAppBarDefaults.topAppBarColors(titleContentColor = appColorScheme.background, containerColor = appColorScheme.background),
+            colors = TopAppBarDefaults.topAppBarColors(
+                titleContentColor = appColorScheme.background,
+                containerColor = appColorScheme.background
+            ),
             modifier = Modifier.fillMaxWidth()
         )
         TabRow(
@@ -180,9 +147,11 @@ fun MediatekScreen(tracksViewModel: TracksViewModel,
                 text = { Text(text = stringResource(id = R.string.playlists)) },
             )
         }
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .height(8.dp))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(8.dp)
+        )
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
@@ -224,7 +193,10 @@ fun FavoriteTracksPage(
 
         is FavouriteState.Empty -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = stringResource(id = R.string.tracks_message))
+                Text(
+                    text = stringResource(id = R.string.tracks_message),
+                    color = appColorScheme.onBackground
+                )
             }
         }
     }
@@ -341,7 +313,8 @@ fun PlaylistItem(
                     painter = placeholder,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
                         .background(appColorScheme.background)
                 )
             }

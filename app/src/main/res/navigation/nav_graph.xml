@@ -8,7 +8,7 @@
         android:id="@+id/searchFragment"
         android:name="com.example.playlistmaker.presentation.fragments.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search">
+        >
     <action
         android:id="@+id/action_searchFragment_to_audioPlayer"
         app:destination="@id/audioPlayer" />
@@ -17,12 +17,12 @@
         android:id="@+id/settingsFragment"
         android:name="com.example.playlistmaker.presentation.fragments.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+         />
     <fragment
         android:id="@+id/mediatekFragment"
         android:name="com.example.playlistmaker.presentation.fragments.MediatekFragment"
         android:label="fragment_library"
-        tools:layout="@layout/fragment_mediatek">
+        >
         <action
         android:id="@+id/action_mediatekFragment_to_audioPlayer"
         app:destination="@id/audioPlayer"

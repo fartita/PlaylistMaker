@@ -19,16 +19,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.states.SearchState
-import com.example.playlistmaker.databinding.FragmentSearchBinding
-import com.example.playlistmaker.domain.model.Track
+
 import com.example.playlistmaker.presentation.compose.SearchScreen
-import com.example.playlistmaker.presentation.recycler.SearchAdapter
 import com.example.playlistmaker.presentation.util.ConnectionBroadcastReceiver
 import com.example.playlistmaker.presentation.util.debounce
 import com.example.playlistmaker.presentation.viewmodels.search.SearchViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+
 
 class SearchFragment : Fragment() {
 
