@@ -4,40 +4,56 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentMediatekBinding
-import com.example.playlistmaker.presentation.recycler.LibraryViewPageAdapter
-import com.google.android.material.tabs.TabLayoutMediator
+import com.example.playlistmaker.presentation.compose.MediatekScreen
+import com.example.playlistmaker.presentation.viewmodels.activity.HostPlaylistViewModel
+import com.example.playlistmaker.presentation.viewmodels.library.PlayListLibraryViewModel
+import com.example.playlistmaker.presentation.viewmodels.library.TracksViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MediatekFragment: Fragment() {
-    private var _binding: FragmentMediatekBinding? = null
-    private val binding get() = _binding!!
 
-    private lateinit var tabMediator: TabLayoutMediator
+
+    private val tracksViewModel by viewModel<TracksViewModel>()
+    private val playlistsViewModel by viewModel<PlayListLibraryViewModel>()
+    private val hostViewModel by activityViewModel<HostPlaylistViewModel>()
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMediatekBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
-    }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            binding.viewPager.adapter = LibraryViewPageAdapter(childFragmentManager, lifecycle)
-            tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-                when (position) {
-                    0 -> tab.text = getString(R.string.favourites)
-                    1 -> tab.text = getString(R.string.playlists)
-                }
+        return ComposeView(requireContext()).apply {
+            setContent {
+                    MediatekScreen(
+                        tracksViewModel = tracksViewModel,
+                        playListsViewModel = playlistsViewModel,
+                        onTrackClick = { track ->
+                            tracksViewModel.setTrack(track)
+                            findNavController().navigate(R.id.action_mediatekFragment_to_audioPlayer)
+                        },
+                        onPlaylistClick = { playList ->
+                            hostViewModel.setPlayList(playList)
+                            findNavController().navigate(
+                                R.id.action_mediatekFragment_to_playlistFragment,
+                            )
+                        },
+                        onNewPlaylistClick = {
+                            findNavController().navigate(R.id.action_mediatekFragment_to_playlistCreatorFragment)
+                        })
             }
-            tabMediator.attach()
+        }
     }
 
-    override fun onDestroyView() {
-        tabMediator.detach()
-        super.onDestroyView()
-        _binding = null
-    }
+
+//    override fun onDestroyView() {
+//        tabMediator.detach()
+//        super.onDestroyView()
+//        _binding = null
+//    }
 }

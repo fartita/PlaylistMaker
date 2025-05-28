@@ -1,35 +1,36 @@
 package com.example.playlistmaker.presentation.viewmodels.settings
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.data.states.SettingsState
 import com.example.playlistmaker.domain.settings.SettingsInteractor
 
 class SettingsViewModel(private val settingsInteractor: SettingsInteractor): ViewModel() {
 
-    private val stateLiveData = MutableLiveData<SettingsState>()
-    fun observeState(): LiveData<SettingsState> = stateLiveData
+    private val darkTheme = MutableLiveData<Boolean>()
+    val darkThemeState: LiveData<Boolean> = darkTheme
 
-
-    fun getDarkTheme(){
-        renderState(SettingsState.GetDarkTheme(settingsInteractor.getDarkTheme()))
+    init {
+        darkTheme.postValue(settingsInteractor.getDarkTheme())
     }
+
+    fun execute(actionType: ActionType) {
+        when (actionType) {
+
+            is ActionType.Theme -> setDarkTheme(actionType.settings)
+        }
+    }
+
 
     fun setDarkTheme(isDarkTheme: Boolean){
         settingsInteractor.setDarkTheme(isDarkTheme)
-        renderState(SettingsState.SetDarkTheme(isDarkTheme))
+        darkTheme.postValue(isDarkTheme)
     }
 
-    fun setInit(){
-        renderState(SettingsState.Prepare)
-    }
 
-    private fun renderState(state: SettingsState) {
-        stateLiveData.postValue(state)
+
+    sealed interface ActionType {
+        data class Theme( val settings: Boolean) : ActionType
     }
 }
